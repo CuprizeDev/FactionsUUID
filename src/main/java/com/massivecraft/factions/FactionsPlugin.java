@@ -380,8 +380,12 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
 
         if (conf().commands().seeChunk().isParticles()) {
             double delay = Math.floor(conf().commands().seeChunk().getParticleUpdateTime() * 20);
-            seeChunkUtil = new SeeChunkUtil();
-            seeChunkUtil.runTaskTimer(this, 0, (long) delay);
+            try {
+                seeChunkUtil = new SeeChunkUtil();
+                seeChunkUtil.runTaskTimer(this, 0, (long) delay);
+            } catch (IllegalArgumentException exc) {
+                getLogger().warning(exc.getMessage());
+            }
         }
         // End run before registering event handlers.
 

@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,16 +20,18 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@SuppressWarnings("unchecked")
 public class SeeChunkUtil extends BukkitRunnable {
 
     private final Set<UUID> playersSeeingChunks = new HashSet<>();
     private final boolean useColor;
-    private final Object effect;
+    private Object effect;
 
     public SeeChunkUtil() {
         String effectName = FactionsPlugin.getInstance().conf().commands().seeChunk().getParticleName();
         this.effect = FactionsPlugin.getInstance().getParticleProvider().effectFromString(effectName);
+        if (this.effect == null) {
+            throw new IllegalArgumentException(String.format("Effect %s doesn't exist on this version of minecraft!", effectName));
+        }
         this.useColor = FactionsPlugin.getInstance().conf().commands().seeChunk().isRelationalColor();
 
         FactionsPlugin.getInstance().getLogger().info(FactionsPlugin.getInstance().txt().parse("Using %s as the ParticleEffect for /f sc", FactionsPlugin.getInstance().getParticleProvider().effectName(effect)));
