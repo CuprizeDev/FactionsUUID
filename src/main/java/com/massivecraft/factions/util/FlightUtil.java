@@ -86,14 +86,19 @@ public class FlightUtil {
                 return false;
 
             int radiusSquared = radius * radius;
-            Location loc = target.getPlayer().getLocation();
+            boolean ignoreYLevel = FactionsPlugin.getInstance().conf().commands().fly().isIgnoreYPositionOnEnemyCheck();
+            Location loc = target.getPlayer().getLocation().clone();
+            if(ignoreYLevel)
+                loc.setY(1);
             Location cur;
             for (FPlayer player : players) {
                 if (player.isStealth() || player == target || (player.getPlayer() != null && Permission.FLY_ANY.has(player.getPlayer())) || player.isAdminBypassing() || (player.getPlayer() != null && player.getPlayer().getGameMode() == GameMode.SPECTATOR)) {
                     continue;
                 }
 
-                cur = player.getPlayer().getLocation();
+                cur = player.getPlayer().getLocation().clone();
+                if(ignoreYLevel)
+                    cur.setY(1);
 
                 if (cur.getWorld().getUID().equals(loc.getWorld().getUID()) &&
                         cur.distanceSquared(loc) <= radiusSquared &&

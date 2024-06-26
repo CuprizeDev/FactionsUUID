@@ -199,6 +199,8 @@ public class MainConfig {
                     "Set to 0 if wanted disable\n" +
                     "Note: Will produce lag at higher numbers")
             private int enemyRadius = 7;
+            @Comment("If true this will ignore Y positions when checking for enemies nearby.")
+            private boolean ignoreYPositionOnEnemyCheck = false;
             @Comment("How frequently to check enemy radius, in seconds. Set to 0 to disable checking.")
             private int radiusCheck = 1;
             @Comment("Should we disable flight if the player has suffered generic damage")
@@ -233,6 +235,10 @@ public class MainConfig {
 
             public int getEnemyRadius() {
                 return enemyRadius;
+            }
+
+            public boolean isIgnoreYPositionOnEnemyCheck() {
+                return ignoreYPositionOnEnemyCheck;
             }
 
             public int getRadiusCheck() {
@@ -1916,6 +1922,12 @@ public class MainConfig {
                     "if they have homes set in that Faction's territory?")
             private boolean deleteEssentialsHomes = true;
 
+            @Comment("Should we deny a player from teleporting to their essentials home if its located in another Faction's territory?\n" +
+                     "if you have 'deleteEssentialsHomes' to true and you have a roster system on your server, it will delete all homes\n " +
+                     "everytime a player rotates out, but when you have 'denyEssentialsHomeTeleport' to true it will not delete their homes\n" +
+                     "when they get rotated out, rather it will just deny teleporting until they rejoin the faction.")
+            private boolean denyEssentialsHomeTeleport = false;
+
             @Comment("Default Relation allows you to change the default relation for Factions.\n" +
                     "Example usage would be so people can't leave then make a new Faction while Raiding\n" +
                     "  in order to be able to execute commands if the default relation is neutral.")
@@ -1951,6 +1963,11 @@ public class MainConfig {
 
             public boolean isDeleteEssentialsHomes() {
                 return deleteEssentialsHomes;
+            }
+
+            public boolean isDenyEssentialsHomeTeleport()
+            {
+                return denyEssentialsHomeTeleport;
             }
 
             public String getDefaultRelation() {

@@ -24,8 +24,13 @@ public class Essentials {
         essentials = (IEssentials) ess;
         FactionsPlugin plugin = FactionsPlugin.getInstance();
         plugin.getLogger().info("Found and connected to Essentials");
-        if (plugin.conf().factions().other().isDeleteEssentialsHomes()) {
-            plugin.getLogger().info("Based on main.conf will delete Essentials player homes in their old faction when they leave");
+        boolean registerEvent = plugin.conf().factions().other().isDeleteEssentialsHomes() || plugin.conf().factions().other().isDenyEssentialsHomeTeleport();
+        if (registerEvent) {
+            if(plugin.conf().factions().other().isDeleteEssentialsHomes())
+                plugin.getLogger().info("Based on main.conf will delete Essentials player homes in their old faction when they leave");
+
+            if(plugin.conf().factions().other().isDenyEssentialsHomeTeleport())
+                plugin.getLogger().info("Based on main.conf will deny Essentials player homes from teleporting when they leave");
             plugin.getServer().getPluginManager().registerEvents(new EssentialsListener(essentials), plugin);
         }
         if (plugin.conf().factions().homes().isTeleportCommandEssentialsIntegration()) {

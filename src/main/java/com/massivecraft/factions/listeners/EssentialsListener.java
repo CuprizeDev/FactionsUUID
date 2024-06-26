@@ -2,13 +2,14 @@ package com.massivecraft.factions.listeners;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.Faction;
-import com.massivecraft.factions.FactionsPlugin;
+import com.massivecraft.factions.*;
 import com.massivecraft.factions.event.FPlayerLeaveEvent;
+import com.massivecraft.factions.util.TL;
+import net.ess3.api.IUser;
 import net.ess3.api.InvalidWorldException;
+import net.ess3.api.events.UserTeleportHomeEvent;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -26,6 +27,8 @@ public class EssentialsListener implements Listener {
 
     @EventHandler
     public void onLeave(FPlayerLeaveEvent event) throws Exception {
+        if(!FactionsPlugin.getInstance().conf().factions().other().isDeleteEssentialsHomes())
+            return;
         // Get the USER from their UUID.
         Faction faction = event.getFaction();
         User user = ess.getUser(UUID.fromString(event.getfPlayer().getId()));
@@ -58,6 +61,28 @@ public class EssentialsListener implements Listener {
                 FactionsPlugin.getInstance().log(Level.INFO, "FactionLeaveEvent: Removing home %s, player %s, in territory of %s",
                         homeName, event.getfPlayer().getName(), faction.getTag());
             }
+        }
+    }
+
+    @EventHandler
+    public void onTeleportToHomeEvent(UserTeleportHomeEvent e)
+    {
+        if(e.getHomeType() != UserTeleportHomeEvent.HomeType.HOME || !FactionsPlugin.getInstance().conf().factions().other().isDenyEssentialsHomeTeleport())
+            return;
+        IUser user = e.getUser();
+        Player p = user.getBase();
+        FPlayer pl = FPlayers.getInstance().getByPlayer(p);
+        if(p.hasPermission("essentials.home.others") || pl.isAdminBypassing())
+            return;
+        Location loc = e.getHomeLocation();
+        Faction factionAt = Board.getInstance().getFactionAt(new FLocation(loc));
+        if(!factionAt.isNormal())
+            return;
+        if(!pl.hasFaction()
+           || (pl.hasFaction() && !pl.getFactionId().equals(factionAt.getId())))
+        {
+            e.setCancelled(true);
+            pl.msg(TL.COMMAND_ESSENTIALS_HOME_DENY, factionAt.getTag());
         }
     }
 }

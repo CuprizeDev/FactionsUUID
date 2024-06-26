@@ -299,4 +299,6 @@ public interface FPlayer extends EconomyParticipator {
     boolean isStealth();
 
     void setStealth(boolean stealth);
+
+    void setStealthFromCommand(boolean stealth);
 }

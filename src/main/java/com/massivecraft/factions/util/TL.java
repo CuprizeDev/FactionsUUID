@@ -296,6 +296,7 @@ public enum TL {
     COMMAND_HOME_TOTELEPORT("to teleport to your faction home"),
     COMMAND_HOME_FORTELEPORT("for teleporting to your faction home"),
     COMMAND_HOME_DESCRIPTION("Teleport to the faction home"),
+    COMMAND_ESSENTIALS_HOME_DENY("&7You &ccan't &7teleport to this home because it's claimed by &c%s&8!"),
 
     COMMAND_INVITE_TOINVITE("to invite someone"),
     COMMAND_INVITE_FORINVITE("for inviting someone"),
