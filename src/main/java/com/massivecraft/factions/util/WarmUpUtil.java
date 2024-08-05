@@ -2,6 +2,7 @@ package com.massivecraft.factions.util;
 
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FactionsPlugin;
+import com.massivecraft.factions.struct.Permission;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class WarmUpUtil {
@@ -16,7 +17,7 @@ public class WarmUpUtil {
      *                       note: for translations: %s = action, %d = delay
      */
     public static void process(final FPlayer player, Warmup warmup, TL translationKey, String action, final Runnable runnable, long delay) {
-        if (delay > 0) {
+        if (delay > 0 && !Permission.WARMUP_BYPASS.has(player.getPlayer())) {
             if (player.isWarmingUp()) {
                 player.msg(TL.WARMUPS_ALREADY);
             } else {

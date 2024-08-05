@@ -126,6 +126,7 @@ public enum Permission {
     UNCLAIM_ALL("unclaimall"),
     UPGRADE("upgrade"),
     VERSION("version"),
+    WARMUP_BYPASS("warmup.bypass"),
     SCOREBOARD("scoreboard"),
     SEECHUNK("seechunk"),
     SETWARP("setwarp"),

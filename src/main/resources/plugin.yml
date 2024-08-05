@@ -45,6 +45,7 @@ permissions:
       factions.powerboost: true
       factions.sethome.any: true
       factions.money.*: true
+      factions.warmup.bypass: true
       factions.join.any: true
       factions.join.others: true
       factions.admin.any: true
