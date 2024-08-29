@@ -399,13 +399,7 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
             getServer().getPluginManager().registerEvents(new OneEightPlusListener(this), this);
         }
 
-        try{
-            Class.forName("net.techcable.tacospigot.event.entity.SpawnerPreSpawnEvent");
-
-            getServer().getPluginManager().registerEvents(new FactionsSpawnerBoostListener(this), this);
-        }catch(ClassNotFoundException exc){
-            Bukkit.getLogger().severe("[Factions] - Not able to register spawner boost listener as you are not using taco spigot!");
-        }
+        getServer().getPluginManager().registerEvents(new FactionsSpawnerBoostListener(this), this);
 
         // Version specific portal listener check.
         if (mcVersion >= 1400) { // Starting with 1.14
