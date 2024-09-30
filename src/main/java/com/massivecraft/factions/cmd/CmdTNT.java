@@ -19,6 +19,7 @@ public class CmdTNT extends FCommand {
         this.addSubCommand(new CmdTNTWithdraw());
         this.addSubCommand(new CmdTNTSiphon());
         this.addSubCommand(new CmdTNTAdminSet());
+        this.addSubCommand(new CmdTNTAdminAdd());
 
         this.requirements = new CommandRequirements.Builder(Permission.TNT_INFO).memberOnly().build();
     }

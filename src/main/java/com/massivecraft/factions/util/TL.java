@@ -615,7 +615,9 @@ public enum TL {
 
     COMMAND_TNT_TERRITORYONLY("&cCommand can only be run from your faction's territory!"),
     COMMAND_TNT_ADMINSET_USAGE("Set tnt as an admin"),
-    COMMAND_TNT_ADMINSET_SETSUCCESSFUL("&eSet %1$s&e's tnt to &c%2$s&&e."),
+    COMMAND_TNT_ADMINADD_USAGE("Add tnt as an admin"),
+    COMMAND_TNT_ADMINSET_SETSUCCESSFUL("&eSet %1$s&e's tnt to &c%2$s&e."),
+    COMMAND_TNT_ADMINADD_ADDSUCCESSFUL("&eAdded %1$s&e tnt to &c%2$s&e's tnt bank."),
     COMMAND_TNT_DEPOSIT_DESCRIPTION("Add to your faction's TNT bank"),
     COMMAND_TNT_DEPOSIT_FAIL_FULL("&cFaction bank already at maximum!"),
     COMMAND_TNT_DEPOSIT_FAIL_NOTENOUGH("&cYou do not have that much TNT!"),
