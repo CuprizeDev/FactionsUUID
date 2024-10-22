@@ -47,8 +47,7 @@ public enum FancyTag implements Tag {
         FancyMessage currentOnline = FactionsPlugin.getInstance().txt().parseFancy(prefix);
         boolean firstOnline = true;
         for (FPlayer p : MiscUtil.rankOrder(target.getFPlayersWhereRole(Role.ALT))) {
-            if(p.getRole() == Role.ALT)continue;
-            if (fme.getPlayer() != null) {
+            if (fme.getPlayer() != null && p.getPlayer() != null && !fme.getPlayer().canSee(p.getPlayer())) {
                 continue; // skip
             }
             String name = p.getNameAndTitle();
