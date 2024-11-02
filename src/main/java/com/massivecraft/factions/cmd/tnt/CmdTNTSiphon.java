@@ -6,9 +6,11 @@ import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.cmd.CommandContext;
 import com.massivecraft.factions.cmd.CommandRequirements;
 import com.massivecraft.factions.cmd.FCommand;
+import com.massivecraft.factions.event.FPlayerTNTSiphonEvent;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.TL;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Dispenser;
 
@@ -49,6 +51,11 @@ public class CmdTNTSiphon extends FCommand {
             context.msg(TL.COMMAND_TNT_SIPHON_FAIL_MAXRADIUS, radius, FactionsPlugin.getInstance().conf().commands().tnt().getMaxRadius());
             return;
         }
+
+        FPlayerTNTSiphonEvent event = new FPlayerTNTSiphonEvent(context.fPlayer);
+        Bukkit.getPluginManager().callEvent(event);
+        if(event.isCancelled())
+            return;
 
         List<Dispenser> list = CmdTNTFill.getDispensers(context.player.getLocation(), radius, context.faction.getId());
 

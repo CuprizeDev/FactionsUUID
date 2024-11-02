@@ -2,6 +2,7 @@ package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FactionsPlugin;
+import com.massivecraft.factions.event.FPlayerOpenWarpGUIEvent;
 import com.massivecraft.factions.event.FPlayerTeleportEvent;
 import com.massivecraft.factions.gui.WarpGUI;
 import com.massivecraft.factions.perms.PermissibleAction;
@@ -38,6 +39,10 @@ public class CmdWarp extends FCommand {
         }
 
         if (context.args.size() == 0) {
+            FPlayerOpenWarpGUIEvent event = new FPlayerOpenWarpGUIEvent(context.faction, context.fPlayer);
+            Bukkit.getPluginManager().callEvent(event);
+            if(event.isCancelled())
+                return;
             WarpGUI ui = new WarpGUI(context.fPlayer, context.faction);
             ui.open();
         } else if (context.args.size() > 2) {

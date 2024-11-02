@@ -3,6 +3,8 @@ package com.massivecraft.factions.cmd;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.FactionsPlugin;
+import com.massivecraft.factions.config.file.MainConfig;
 import com.massivecraft.factions.event.FPlayerChangeLeaderEvent;
 import com.massivecraft.factions.event.FPlayerJoinEvent;
 import com.massivecraft.factions.perms.Role;
@@ -81,9 +83,23 @@ public class CmdAdmin extends FCommand {
         Bukkit.getServer().getPluginManager().callEvent(new FPlayerChangeLeaderEvent(fyou, admin));
         context.msg(TL.COMMAND_ADMIN_PROMOTES, fyou.describeTo(context.fPlayer, true));
 
-        // Inform all players
-        for (FPlayer fplayer : FPlayers.getInstance().getOnlinePlayers()) {
-            fplayer.msg(TL.COMMAND_ADMIN_PROMOTED, context.player == null ? TL.GENERIC_SERVERADMIN.toString() : context.fPlayer.describeTo(fplayer, true), fyou.describeTo(fplayer), targetFaction.describeTo(fplayer));
+        if(FactionsPlugin.getInstance().conf().factions().chat().isBroadcastLeaderChanges())
+        {
+            // Inform all players
+            for(FPlayer fplayer : FPlayers.getInstance().getOnlinePlayers())
+            {
+                fplayer.msg(TL.COMMAND_ADMIN_PROMOTED, context.player ==
+                                                       null ? TL.GENERIC_SERVERADMIN.toString() : context.fPlayer.describeTo(fplayer, true), fyou.describeTo(fplayer), targetFaction.describeTo(fplayer));
+            }
+        }
+        else
+        {
+            // Inform involved faction players
+            for(FPlayer fplayer : fyou.getFaction().getFPlayersWhereOnline(true))
+            {
+                fplayer.msg(TL.COMMAND_ADMIN_PROMOTED, context.player ==
+                                                       null ? TL.GENERIC_SERVERADMIN.toString() : context.fPlayer.describeTo(fplayer, true), fyou.describeTo(fplayer), targetFaction.describeTo(fplayer));
+            }
         }
     }
 

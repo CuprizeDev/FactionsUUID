@@ -124,6 +124,11 @@ public enum TL {
     COMMAND_CLAIM_DENIED("&cYou do not have permission to claim in a radius."),
     COMMAND_CLAIM_DESCRIPTION("Claim land from where you are standing"),
     COMMAND_CLAIM_OUTSIDEBORDER("&cYou can't make a claim outside of the world border!"),
+    COMMAND_CLAIMAT_TOOFAR_CHAT("&cYou cannot claim land this far, max is %d chunks away."),
+    COMMAND_CLAIMAT_TOOFAR_TOOLTIP("&cCannot claim, out of range!"),
+    COMMAND_UNCLAIMAT_TOOFAR_CHAT("&cYou cannot unclaim land this far, max is %d chunks away."),
+    COMMAND_UNCLAIMAT_TOOFAR_TOOLTIP("&cCannot unclaim, out of range!"),
+    COMMAND_CLAIMAT_WRONGWORLD("&cYou can only claimat at the world your currently in."),
 
     COMMAND_CLAIMFILL_DESCRIPTION("Claim land filling in a gap in claims"),
     COMMAND_CLAIMFILL_ABOVEMAX("&cThe maximum limit for claim fill is %s."),
@@ -812,7 +817,9 @@ public enum TL {
     CLAIM_OUTSIDEWORLDBORDER("&eYour claim is outside the border."),
     CLAIM_OUTSIDEBORDERBUFFER("&eYour claim is outside the border. %d chunks away world edge required."),
     CLAIM_CLICK_TO_CLAIM("Click to try to claim &2(%1$d, %2$d)"),
+    CLAIM_CLICK_TO_UNCLAIM("Click to try to unclaim &2(%1$d, %2$d)"),
     CLAIM_YOUAREHERE("You are here"),
+    CLAIMEDTOOLTIP_FACTIONNAME("Claimed by: &c%s"),
 
     /**
      * More generic, or less easily categorisable translations, which may apply to more than one class

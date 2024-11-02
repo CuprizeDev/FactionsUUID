@@ -7,36 +7,28 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Event called when a FPlayer toggles f stealth
+ * Event called when a FPlayer does /f tnt f
  */
-public class FPlayerToggleStealthEvent extends Event implements Cancellable
+public class FPlayerTNTFillEvent extends Event implements Cancellable
 {
-
     private static final HandlerList handlers = new HandlerList();
 
     private final FPlayer fPlayer;
     private boolean cancelled = false;
-    private Type type;
 
-    public FPlayerToggleStealthEvent(FPlayer fPlayer, Type type)
+    public FPlayerTNTFillEvent(FPlayer fPlayer)
     {
         this.fPlayer = fPlayer;
-        this.type = type;
     }
 
-    public FPlayer getfPlayer()
+    public FPlayer getFPlayer()
     {
         return fPlayer;
     }
 
-    public Type getType()
-    {
-        return type;
-    }
-
     public boolean isAlt()
     {
-        return getfPlayer().hasFaction() && getfPlayer().getRole() == Role.ALT;
+        return getFPlayer().hasFaction() && getFPlayer().getRole() == Role.ALT;
     }
 
     @Override
@@ -60,10 +52,5 @@ public class FPlayerToggleStealthEvent extends Event implements Cancellable
     public static HandlerList getHandlerList()
     {
         return handlers;
-    }
-
-    public enum Type
-    {
-        COMMAND, METHOD;
     }
 }

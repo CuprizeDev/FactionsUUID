@@ -10,6 +10,7 @@ import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.cmd.CommandContext;
 import com.massivecraft.factions.config.file.MainConfig;
 import com.massivecraft.factions.data.MemoryFPlayer;
+import com.massivecraft.factions.event.FPlayerFlyDisableByEnemyNearbyEvent;
 import com.massivecraft.factions.event.FPlayerJoinEvent;
 import com.massivecraft.factions.event.FPlayerLeaveEvent;
 import com.massivecraft.factions.gui.GUI;
@@ -144,6 +145,13 @@ public class FactionsPlayerListener extends AbstractListener {
             //Make sure it was disabled if they don't have permission for it.
             fPlayer.setAutoFlying(false);
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onFlyDisableForEnemyNearby(FPlayerFlyDisableByEnemyNearbyEvent e)
+    {
+        if(e.getFPlayer().getPlayer().hasPermission("essentials.fly"))
+            e.setCancelled(true);
     }
 
     private FPlayer initPlayer(Player player) {

@@ -6,10 +6,11 @@ import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.cmd.CommandContext;
 import com.massivecraft.factions.cmd.CommandRequirements;
 import com.massivecraft.factions.cmd.FCommand;
+import com.massivecraft.factions.event.FPlayerTNTFillEvent;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.struct.Permission;
-import com.massivecraft.factions.util.Pair;
 import com.massivecraft.factions.util.TL;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,11 +19,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CmdTNTFill extends FCommand {
     public CmdTNTFill() {
@@ -53,6 +51,11 @@ public class CmdTNTFill extends FCommand {
             context.msg(TL.COMMAND_TNT_FILL_FAIL_MAXRADIUS, radius, FactionsPlugin.getInstance().conf().commands().tnt().getMaxRadius());
             return;
         }
+
+        FPlayerTNTFillEvent event = new FPlayerTNTFillEvent(context.fPlayer);
+        Bukkit.getPluginManager().callEvent(event);
+        if(event.isCancelled())
+            return;
 
         List<Dispenser> list = getDispensers(context.player.getLocation(), radius, context.faction.getId());
 

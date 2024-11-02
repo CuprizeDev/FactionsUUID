@@ -108,6 +108,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdSetDefaultRole cmdSetDefaultRole = new CmdSetDefaultRole();
     public CmdMapHeight cmdMapHeight = new CmdMapHeight();
     public CmdClaimAt cmdClaimAt = new CmdClaimAt();
+    public CmdUnclaimAt cmdUnclaimAt = new CmdUnclaimAt();
     public CmdBan cmdban = new CmdBan();
     public CmdUnban cmdUnban = new CmdUnban();
     public CmdBanlist cmdbanlist = new CmdBanlist();
@@ -217,6 +218,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdSetDefaultRole);
         this.addSubCommand(this.cmdMapHeight);
         this.addSubCommand(this.cmdClaimAt);
+        this.addSubCommand(this.cmdUnclaimAt);
         this.addSubCommand(this.cmdban);
         this.addSubCommand(this.cmdUnban);
         this.addSubCommand(this.cmdbanlist);

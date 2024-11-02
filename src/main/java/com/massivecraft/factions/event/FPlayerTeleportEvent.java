@@ -11,7 +11,7 @@ public class FPlayerTeleportEvent extends FactionPlayerEvent implements Cancella
     private final Location location;
 
     public enum PlayerTeleportReason {
-        HOME, AHOME, WARP, STUCK
+        HOME, AHOME, WARP, STUCK, WARP_WARMUP
     }
 
     public FPlayerTeleportEvent(FPlayer p, Location location, FPlayerTeleportEvent.PlayerTeleportReason r) {

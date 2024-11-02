@@ -3,6 +3,7 @@ package com.massivecraft.factions.util;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.FactionsPlugin;
+import com.massivecraft.factions.event.FPlayerFlyDisableByEnemyNearbyEvent;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.struct.Permission;
 import org.bukkit.Bukkit;
@@ -62,7 +63,12 @@ public class FlightUtil {
                     continue;
 
                 if (pilot.isFlying() && !pilot.isAdminBypassing()) {
-                    if (enemiesNearby(pilot, FactionsPlugin.getInstance().conf().commands().fly().getEnemyRadius(), players) && !pilot.getPlayer().hasPermission("essentials.fly")) {
+                    if (enemiesNearby(pilot, FactionsPlugin.getInstance().conf().commands().fly().getEnemyRadius(), players))
+                    {//!pilot.getPlayer().hasPermission("essentials.fly") that code was moved to the FactionsPlayerListener class
+                        FPlayerFlyDisableByEnemyNearbyEvent event = new FPlayerFlyDisableByEnemyNearbyEvent(pilot);
+                        Bukkit.getPluginManager().callEvent(event);
+                        if(event.isCancelled())
+                            continue;
                         pilot.msg(TL.COMMAND_FLY_ENEMY_DISABLE);
                         pilot.setFlying(false);
                         if (pilot.isAutoFlying()) {

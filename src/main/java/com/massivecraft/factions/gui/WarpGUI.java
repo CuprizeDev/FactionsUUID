@@ -3,6 +3,7 @@ package com.massivecraft.factions.gui;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.FactionsPlugin;
+import com.massivecraft.factions.event.FPlayerTeleportEvent;
 import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.util.TL;
@@ -225,6 +226,10 @@ public class WarpGUI extends GUI<Integer> {
     }
 
     private void doWarmup(final String warp) {
+        FPlayerTeleportEvent event = new FPlayerTeleportEvent(user, faction.getWarp(warp).getLocation(), FPlayerTeleportEvent.PlayerTeleportReason.WARP_WARMUP);
+        Bukkit.getPluginManager().callEvent(event);
+        if(event.isCancelled())
+            return;
         WarmUpUtil.process(user, WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warp, () -> {
             Player player = Bukkit.getPlayer(user.getPlayer().getUniqueId());
             if (player != null) {
