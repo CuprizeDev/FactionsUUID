@@ -10,12 +10,8 @@ import com.massivecraft.factions.config.file.MainConfig;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.util.TL;
-import com.massivecraft.factions.util.UpgradeType;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -42,11 +38,7 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -406,8 +398,10 @@ public class FactionsEntityListener extends AbstractListener {
 
         // You can never hurt faction members or allies
         if (relation.isMember() || relation.isAlly() || relation.isTruce()) {
-            if (notify) {
-                attacker.msg(TL.PLAYER_PVP_CANTHURT, defender.describeTo(attacker));
+            if (!attacker.isFriendlyFireOn() || !defender.isFriendlyFireOn()) {
+                if (notify) {
+                    attacker.msg(TL.PLAYER_PVP_CANTHURT, defender.describeTo(attacker));
+                }
             }
             return false;
         }

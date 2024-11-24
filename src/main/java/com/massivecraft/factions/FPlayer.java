@@ -252,6 +252,10 @@ public interface FPlayer extends EconomyParticipator {
 
     void setId(String id);
 
+    boolean isFriendlyFireOn();
+
+    void setFriendlyFire(boolean friendlyFire);
+
     boolean isFlying();
 
     void setFlying(boolean fly);

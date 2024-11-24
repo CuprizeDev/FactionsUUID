@@ -4,7 +4,6 @@ import com.massivecraft.factions.FactionsPlugin;
 import org.bukkit.command.CommandSender;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -43,6 +42,7 @@ public enum Permission {
     DISBAND_ANY("disband.any"),
     DTR("dtr"),
     DTR_ANY("dtr.any"),
+    FRIENDLY_FIRE("friendlyfire"),
     FLY("fly"),
     FLY_AUTO("fly.auto"),
     FLY_WILDERNESS("fly.wilderness"),

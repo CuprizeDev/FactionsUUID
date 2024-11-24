@@ -219,6 +219,9 @@ public enum TL {
     COMMAND_DTR_MODIFY_DESCRIPTION("Modify faction DTR"),
     COMMAND_DTR_MODIFY_DONE("&eSet DTR for %s&e to %s"),
 
+    COMMAND_FRIENDLY_FIRE_DESCRIPTION("Enter or leave Faction friendly fire mode"),
+    COMMAND_FRIENDLY_FIRE_CHANGE("&eFaction friendly fire &d%1$s"),
+
     COMMAND_FLY_DESCRIPTION("Enter or leave Faction flight mode"),
     COMMAND_FLY_CHANGE("&eFaction flight &d%1$s"),
     COMMAND_FLY_DAMAGE("&eFaction flight &ddisabled&e due to entering combat"),

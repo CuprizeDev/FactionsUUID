@@ -77,6 +77,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected boolean flyTrailsState = false;
     protected String flyTrailsEffect = null;
     protected boolean inspecting = false;
+    protected boolean friendlyFire = false;
 
     protected boolean seeingChunk = false;
 
@@ -1127,6 +1128,15 @@ public abstract class MemoryFPlayer implements FPlayer {
 
     public boolean isOffline() {
         return !isOnline();
+    }
+
+    public boolean isFriendlyFireOn() {
+        return friendlyFire;
+    }
+
+    public void setFriendlyFire(boolean friendlyFire) {
+        this.friendlyFire = friendlyFire;
+        this.msg(TL.COMMAND_FRIENDLY_FIRE_CHANGE, friendlyFire ? TL.GENERIC_ENABLED : TL.GENERIC_DISABLED);
     }
 
     public boolean isFlying() {
