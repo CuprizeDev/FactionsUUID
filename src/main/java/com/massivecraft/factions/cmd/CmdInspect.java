@@ -23,7 +23,7 @@ public class CmdInspect extends FCommand{
 
     @Override
     public void perform(CommandContext context) {
-        if(context.args.size() == 0){
+        if(context.args.isEmpty()){
             context.fPlayer.setInspecting(!context.fPlayer.isInspecting());
 
             context.fPlayer.msg(TL.COMMAND_INSPECT_TOGGLE, context.fPlayer.isInspecting() ? TextUtil.parseColor("&aON") : TextUtil.parseColor("&cOFF"));
