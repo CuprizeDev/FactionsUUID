@@ -1136,7 +1136,6 @@ public abstract class MemoryFPlayer implements FPlayer {
 
     public void setFriendlyFire(boolean friendlyFire) {
         this.friendlyFire = friendlyFire;
-        this.msg(TL.COMMAND_FRIENDLY_FIRE_CHANGE, friendlyFire ? TL.GENERIC_ENABLED : TL.GENERIC_DISABLED);
     }
 
     public boolean isFlying() {

@@ -25,16 +25,18 @@ public class CmdFriendlyFire extends FCommand {
 
         if (context.args.isEmpty()) {
             fPlayer.setFriendlyFire(!fPlayer.isFriendlyFireOn());
+            context.fPlayer.msg(TL.COMMAND_FRIENDLY_FIRE_CHANGE, fPlayer.isFriendlyFireOn() ? TL.GENERIC_ENABLED : TL.GENERIC_DISABLED);
         } else if (context.args.size() == 1) {
-
+            boolean friendlyFire = false;
             if (context.argAsString(0).equalsIgnoreCase("on")) {
                 fPlayer.setFriendlyFire(true);
-                return;
+                friendlyFire = true;
             }
 
             if (context.argAsString(0).equalsIgnoreCase("off")) {
                 fPlayer.setFriendlyFire(false);
             }
+            context.fPlayer.msg(TL.COMMAND_FRIENDLY_FIRE_CHANGE, friendlyFire ? TL.GENERIC_ENABLED : TL.GENERIC_DISABLED);
         }
     }
 
