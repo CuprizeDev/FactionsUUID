@@ -13,6 +13,9 @@ public class CmdCoords extends FCommand {
         super();
         this.aliases.add("coords");
         this.aliases.add("coord");
+        this.aliases.add("location");
+        this.aliases.add("tl");
+        this.aliases.add("loc");
 
         this.requirements = new CommandRequirements.Builder(Permission.COORDS)
                 .memberOnly()
