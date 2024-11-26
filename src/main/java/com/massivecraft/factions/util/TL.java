@@ -163,6 +163,7 @@ public enum TL {
 
     COMMAND_COORDS_MESSAGE("&e%s's location: &6%d&e, &6%d&e, &6%d&e in &6%s&e"),
     COMMAND_COORDS_DESCRIPTION("Broadcast your current position to your faction"),
+    COMMAND_COORDS_CLICKABLE("&eTeleport to &d%s's &elocation"),
 
     COMMAND_CREATE_MUSTLEAVE("&cYou must leave your current faction first."),
     COMMAND_CREATE_INUSE("&cThat tag is already in use."),

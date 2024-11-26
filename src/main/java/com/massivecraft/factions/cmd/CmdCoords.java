@@ -4,6 +4,9 @@ import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.event.FPlayerPingCoordsEvent;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.TL;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -31,7 +34,10 @@ public class CmdCoords extends FCommand {
         Location location = context.player.getLocation();
         String message = TL.COMMAND_COORDS_MESSAGE.format(context.player.getDisplayName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName());
         for (FPlayer fPlayer : context.faction.getFPlayers()) {
-            fPlayer.sendMessage(message);
+            TextComponent messageClick = new TextComponent(message);
+            messageClick.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpa " + context.player.getDisplayName()));
+            messageClick.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.ComponentBuilder(TL.COMMAND_COORDS_CLICKABLE.format(context.player.getDisplayName())).create()));
+            fPlayer.getPlayer().spigot().sendMessage(messageClick);
         }
     }
 
