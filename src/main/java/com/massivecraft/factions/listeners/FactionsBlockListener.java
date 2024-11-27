@@ -13,6 +13,7 @@ import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.UpgradeType;
 import com.massivecraft.factions.util.material.MaterialDb;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,6 +24,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.Collections;
 import java.util.List;
@@ -388,6 +392,15 @@ public class FactionsBlockListener implements Listener {
                 return true;
             } else if (!justCheck) {
                 me.msg(TL.PERM_DENIED_TERRITORY, permissibleAction.getShortDescription(), otherFaction.getTag(myFaction));
+                if (location.getBlock().getType() == Material.SCAFFOLDING) {
+                    Material feetBlock = player.getLocation().getBlock().getType();
+                    Material headBlock = player.getLocation().add(0, 1, 0).getBlock().getType();
+                    if ((feetBlock == Material.SCAFFOLDING && headBlock == Material.SCAFFOLDING) || player.isSwimming()) {
+                        player.setVelocity(new Vector(0, 0.25, 0));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 10, 100));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 100));
+                    }
+                }
             }
             return false;
         }
