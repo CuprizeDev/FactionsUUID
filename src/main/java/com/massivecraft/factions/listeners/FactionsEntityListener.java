@@ -10,6 +10,7 @@ import com.massivecraft.factions.config.file.MainConfig;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.util.TL;
+import com.massivecraft.factions.util.UpgradeType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Enderman;
@@ -63,6 +64,31 @@ public class FactionsEntityListener extends AbstractListener {
         if (entity instanceof Player) {
             FactionsPlugin.getInstance().getLandRaidControl().onDeath((Player) entity);
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onEntityDamageByPlayer(EntityDamageByEntityEvent event) {
+
+        if (!(event.getDamager() instanceof Player)) {
+            return;
+        }
+
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+
+        Player damager = (Player) event.getDamager();
+        Faction damagerFaction = FPlayers.getInstance().getByPlayer(damager).getFaction();
+        Player target = (Player) event.getEntity();
+        Faction targetFaction = FPlayers.getInstance().getByPlayer(target).getFaction();
+
+        double damageIncrease = event.getDamage()*FactionsPlugin.getInstance().conf().upgrades().damageIncrease()
+                .getNumber(damagerFaction.getUpgrade(UpgradeType.DAMAGE_INCREASE));
+
+        double damageReduction = event.getDamage()*FactionsPlugin.getInstance().conf().upgrades().damageIncrease()
+                .getNumber(targetFaction.getUpgrade(UpgradeType.DAMAGE_REDUCTION));
+
+        event.setDamage((event.getDamage()-damageReduction) + damageIncrease);
     }
 
     /**
@@ -560,7 +586,7 @@ public class FactionsEntityListener extends AbstractListener {
             if (stopEndermanBlockManipulation(loc)) {
                 event.setCancelled(true);
             }
-        } else if (entity instanceof Wither) {
+        } else {
             Faction faction = Board.getInstance().getFactionAt(new FLocation(loc));
             MainConfig.Factions.Protection protection = FactionsPlugin.getInstance().conf().factions().protection();
             // it's a bit crude just using fireball protection, but I'd rather not add in a whole new set of xxxBlockWitherExplosion or whatever

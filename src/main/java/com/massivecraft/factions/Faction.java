@@ -14,7 +14,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -179,6 +178,14 @@ public interface Faction extends EconomyParticipator {
 
     void setTNTBank(int amount);
 
+    int getSandBotCount();
+
+    List<Map<String, Object>> getSandBotLocations();
+
+    void addSandBotLocation(Location location);
+
+    void removeSandBotLocation(Location location);
+    void setSandBotLocations(List<Map<String, Object>> locations);
     // -------------------------------
     // Relation and relation colors
     // -------------------------------

@@ -1,11 +1,6 @@
 package com.massivecraft.factions.listeners;
 
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.Faction;
-import com.massivecraft.factions.FactionsPlugin;
+import com.massivecraft.factions.*;
 import com.massivecraft.factions.config.file.MainConfig;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.Relation;
@@ -13,7 +8,6 @@ import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.UpgradeType;
 import com.massivecraft.factions.util.material.MaterialDb;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,21 +18,35 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class FactionsBlockListener implements Listener {
 
     public FactionsPlugin plugin;
-
     public FactionsBlockListener(FactionsPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler
+    public void onSandBotExplosion(EntityExplodeEvent event) {
+        FLocation fLocation = new FLocation(event.getLocation());
+        Faction faction = Board.getInstance().getFactionAt(fLocation);
+        Set<Location> sandBotLocations = faction.getSandBotLocations().stream()
+                .map(Location::deserialize)
+                .collect(Collectors.toSet());
+
+        event.blockList().forEach(block -> sandBotLocations.remove(block.getLocation()));
+
+        faction.setSandBotLocations(sandBotLocations.stream()
+                .map(Location::serialize)
+                .collect(Collectors.toList()));
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

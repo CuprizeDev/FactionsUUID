@@ -11,8 +11,10 @@ import com.massivecraft.factions.util.MiscUtil;
 import com.massivecraft.factions.util.TextUtil;
 import com.massivecraft.factions.util.material.MaterialDb;
 import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.dynmap.Log;
@@ -3155,8 +3157,586 @@ public class MainConfig {
             }
         }
 
+        public class Exp {
+            private boolean enabled = true;
+
+            private double defaultBoost = 0;
+
+            @Comment("This list follows the format of (PRICE):(The chance to double exp gain). The order of the list is crucial as it dictates the level.")
+            private List<String> levels = new ArrayList<String>(){
+                {
+                    this.add("250000:0.5");
+                    this.add("500000:0.10");
+                    this.add("1000000:0.15");
+                    this.add("1000000:0.25");
+
+                }
+            };
+
+            public int getCost(int level){
+                if(level <= 0 || levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Integer.parseInt(costs[0]);
+            }
+
+            public double getNumber(int level){
+                if(level <= 0)return getDefaultBoost();
+
+                if(levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Double.parseDouble(costs[1]);
+            }
+
+            public List<String> getLevels() {
+                return levels;
+            }
+
+            private Item item = new Item();
+
+            public boolean isEnabled(){
+                return this.enabled;
+            }
+
+            public double getDefaultBoost() {
+                return defaultBoost;
+            }
+
+            public Item item(){
+                return item;
+            }
+
+            public class Item {
+                private String type = "LEGACY_EXP_BOTTLE";
+
+                private String name = "&3&lExp Boost";
+
+                private int slot = 4;
+
+                private int damage = 0;
+
+                public int getSlot() {
+                    return slot;
+                }
+
+                private List<String> lore = new ArrayList<String>(){
+                    {
+                        this.add("&7");
+                        this.add("&d* &eLevel 1");
+                        this.add("&ePrice: &a${PRICE_1}");
+                        this.add("&eAmount: &c{AMOUNT_1}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 2");
+                        this.add("&ePrice: &a${PRICE_2}");
+                        this.add("&eAmount: &c{AMOUNT_2}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 3");
+                        this.add("&ePrice: &a${PRICE_3}");
+                        this.add("&eAmount: &c{AMOUNT_3}");
+                        this.add("&7");
+                        this.add("&7Current Level: &d&n{LEVEL}");
+                    }
+                };
+
+                public SimpleItem getItem(){
+                    return SimpleItem.builder().setMaterial(Material.valueOf(type))
+                            .setData((short) damage)
+                            .setLore(lore)
+                            .setName(TextUtil.parseColor(name))
+                            .build();
+                }
+            }
+        }
+
+        public class Sandbots {
+            private boolean enabled = true;
+
+            private int defaultAmount = 1;
+
+            @Comment("This list follows the format of (PRICE):(Higher Sand Bot Limit). The order of the list is crucial as it dictates the level.")
+            private List<String> levels = new ArrayList<String>(){
+                {
+                    this.add("250000:2");
+                    this.add("500000:3");
+                    this.add("1500000:4");
+                    this.add("2000000:5");
+                    this.add("2500000:6");
+                    this.add("2500000:7");
+                }
+            };
+
+            public int getCost(int level){
+                if(level <= 0 || levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Integer.parseInt(costs[0]);
+            }
+
+            public int getNumber(int level) {
+                if (level <= 0) return getDefaultAmount();
+
+                if (levels.isEmpty() || levels.size() < level) return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                try {
+                    return Integer.parseInt(costs[1]);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid number format for level " + level + ": " + costs[1]);
+                    return -1;
+                }
+            }
+
+            public List<String> getLevels() {
+                return levels;
+            }
+
+            private Item item = new Item();
+
+            public boolean isEnabled(){
+                return this.enabled;
+            }
+
+            public int getDefaultAmount() {
+                return defaultAmount;
+            }
+
+            public Item item(){
+                return item;
+            }
+
+            public class Item {
+                private String type = "SAND";
+
+                private String name = "&e&lSandbot Limit";
+
+                private int slot = 1;
+
+                private int damage = 0;
+
+                public int getSlot() {
+                    return slot;
+                }
+
+                private List<String> lore = new ArrayList<String>() {
+                    {
+                        this.add("&7");
+                        this.add("&d* &eLevel 1");
+                        this.add("&ePrice: &a${PRICE_1}");
+                        this.add("&eAmount: &c{AMOUNT_1}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 2");
+                        this.add("&ePrice: &a${PRICE_2}");
+                        this.add("&eAmount: &c{AMOUNT_2}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 3");
+                        this.add("&ePrice: &a${PRICE_3}");
+                        this.add("&eAmount: &c{AMOUNT_3}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 4");
+                        this.add("&ePrice: &a${PRICE_4}");
+                        this.add("&eAmount: &c{AMOUNT_4}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 5");
+                        this.add("&ePrice: &a${PRICE_5}");
+                        this.add("&eAmount: &c{AMOUNT_5}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 6");
+                        this.add("&ePrice: &a${PRICE_6}");
+                        this.add("&eAmount: &c{AMOUNT_6}");
+                        this.add("&7");
+                        this.add("&7Current Level: &d&n{LEVEL}");
+                    }
+                };
+
+                public SimpleItem getItem(){
+                    return SimpleItem.builder().setMaterial(Material.valueOf(type))
+                            .setData((short) damage)
+                            .setLore(lore)
+                            .setName(TextUtil.parseColor(name))
+                            .build();
+                }
+            }
+        }
+
+        public class DamageIncrease {
+            private boolean enabled = true;
+
+            private double defaultAmount = 0;
+
+            @Comment("This list follows the format of (PRICE):(The damage increase per level). The order of the list is crucial as it dictates the level.")
+            private List<String> levels = new ArrayList<String>(){
+                {
+                    this.add("250000:0.01");
+                    this.add("500000:0.015");
+                    this.add("1000000:0.025");
+
+                }
+            };
+
+            public int getCost(int level){
+                if(level <= 0 || levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Integer.parseInt(costs[0]);
+            }
+
+            public double getNumber(int level){
+                if(level <= 0)return getDefaultAmount();
+
+                if(levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Double.parseDouble(costs[1]);
+            }
+
+            public List<String> getLevels() {
+                return levels;
+            }
+
+            private Item item = new Item();
+
+            public boolean isEnabled(){
+                return this.enabled;
+            }
+
+            public double getDefaultAmount() {
+                return defaultAmount;
+            }
+
+            public Item item(){
+                return item;
+            }
+
+            public class Item {
+                private String type = "DIAMOND_SWORD";
+
+                private String name = "&c&lDamage Increase";
+
+                private int slot = 7;
+
+                private int damage = 0;
+
+                public int getSlot() {
+                    return slot;
+                }
+
+                private List<String> lore = new ArrayList<String>(){
+                    {
+                        this.add("&7");
+                        this.add("&d* &eLevel 1");
+                        this.add("&ePrice: &a${PRICE_1}");
+                        this.add("&eAmount: &c{AMOUNT_1}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 2");
+                        this.add("&ePrice: &a${PRICE_2}");
+                        this.add("&eAmount: &c{AMOUNT_2}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 3");
+                        this.add("&ePrice: &a${PRICE_3}");
+                        this.add("&eAmount: &c{AMOUNT_3}");
+                        this.add("&7");
+                        this.add("&7Current Level: &d&n{LEVEL}");
+                    }
+                };
+
+                public SimpleItem getItem(){
+                    return SimpleItem.builder().setMaterial(Material.valueOf(type))
+                            .setData((short) damage)
+                            .setLore(lore)
+                            .setName(TextUtil.parseColor(name))
+                            .build();
+                }
+            }
+        }
+
+        public class DamageReduction {
+            private boolean enabled = true;
+
+            private double defaultAmount = 0;
+
+            @Comment("This list follows the format of (PRICE):(The damage decrease from enemies per level). The order of the list is crucial as it dictates the level.")
+            private List<String> levels = new ArrayList<String>(){
+                {
+                    this.add("250000:0.01");
+                    this.add("500000:0.015");
+                    this.add("1000000:0.025");
+
+                }
+            };
+
+            public int getCost(int level){
+                if(level <= 0 || levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Integer.parseInt(costs[0]);
+            }
+
+            public double getNumber(int level){
+                if(level <= 0)return getDefaultAmount();
+
+                if(levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Double.parseDouble(costs[1]);
+            }
+
+            public List<String> getLevels() {
+                return levels;
+            }
+
+            private Item item = new Item();
+
+            public boolean isEnabled(){
+                return this.enabled;
+            }
+
+            public double getDefaultAmount() {
+                return defaultAmount;
+            }
+
+            public Item item(){
+                return item;
+            }
+
+            public class Item {
+                private String type = "DIAMOND_CHESTPLATE";
+
+                private String name = "&b&lDamage Reduction";
+
+                private int slot = 8;
+
+                private int damage = 0;
+
+                public int getSlot() {
+                    return slot;
+                }
+
+                private List<String> lore = new ArrayList<String>(){
+                    {
+                        this.add("&7");
+                        this.add("&d* &eLevel 1");
+                        this.add("&ePrice: &a${PRICE_1}");
+                        this.add("&eAmount: &c{AMOUNT_1}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 2");
+                        this.add("&ePrice: &a${PRICE_2}");
+                        this.add("&eAmount: &c{AMOUNT_2}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 3");
+                        this.add("&ePrice: &a${PRICE_3}");
+                        this.add("&eAmount: &c{AMOUNT_3}");
+                        this.add("&7");
+                        this.add("&7Current Level: &d&n{LEVEL}");
+                    }
+                };
+
+                public SimpleItem getItem(){
+                    return SimpleItem.builder().setMaterial(Material.valueOf(type))
+                            .setData((short) damage)
+                            .setLore(lore)
+                            .setName(TextUtil.parseColor(name))
+                            .build();
+                }
+            }
+        }
+
+        public class Mobcoins {
+            private boolean enabled = true;
+
+            private double defaultAmount = 0;
+
+            @Comment("This list follows the format of (PRICE):(The chance of doubling mobcoins per mob kill). The order of the list is crucial as it dictates the level.")
+            private List<String> levels = new ArrayList<String>() {
+                {
+                    this.add("250000:0.05");
+                    this.add("500000:0.010");
+                    this.add("1000000:0.015");
+
+                }
+            };
+
+            public int getCost(int level){
+                if(level <= 0 || levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Integer.parseInt(costs[0]);
+            }
+
+            public double getNumber(int level){
+                if(level <= 0)return getDefaultAmount();
+
+                if(levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Double.parseDouble(costs[1]);
+            }
+
+            public List<String> getLevels() {
+                return levels;
+            }
+
+            private Item item = new Item();
+
+            public boolean isEnabled(){
+                return this.enabled;
+            }
+
+            public double getDefaultAmount() {
+                return defaultAmount;
+            }
+
+            public Item item(){
+                return item;
+            }
+
+            public class Item {
+                private String type = "GOLDEN_SWORD";
+
+                private String name = "&d&lMobcoins";
+
+                private int slot = 10;
+
+                private int damage = 0;
+
+                public int getSlot() {
+                    return slot;
+                }
+
+                private List<String> lore = new ArrayList<String>(){
+                    {
+                        this.add("&7");
+                        this.add("&d* &eLevel 1");
+                        this.add("&ePrice: &a${PRICE_1}");
+                        this.add("&eAmount: &c{AMOUNT_1}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 2");
+                        this.add("&ePrice: &a${PRICE_2}");
+                        this.add("&eAmount: &c{AMOUNT_2}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 3");
+                        this.add("&ePrice: &a${PRICE_3}");
+                        this.add("&eAmount: &c{AMOUNT_3}");
+                        this.add("&7");
+                        this.add("&7Current Level: &d&n{LEVEL}");
+                    }
+                };
+
+                public SimpleItem getItem(){
+                    return SimpleItem.builder().setMaterial(Material.valueOf(type))
+                            .setData((short) damage)
+                            .setLore(lore)
+                            .setName(TextUtil.parseColor(name))
+                            .build();
+                }
+            }
+        }
+
+        public class Tokens {
+            private boolean enabled = true;
+
+            private double defaultAmount = 0;
+
+            @Comment("This list follows the format of (PRICE):(The chance of doubling tokens per mob kill). The order of the list is crucial as it dictates the level.")
+            private List<String> levels = new ArrayList<String>() {
+                {
+                    this.add("250000:0.05");
+                    this.add("500000:0.010");
+                    this.add("1000000:0.015");
+
+                }
+            };
+
+            public int getCost(int level){
+                if(level <= 0 || levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Integer.parseInt(costs[0]);
+            }
+
+            public double getNumber(int level){
+                if(level <= 0)return getDefaultAmount();
+
+                if(levels.size() == 0 || levels.size() < level)return -1;
+
+                String[] costs = levels.get(level - 1).split(":");
+
+                return Double.parseDouble(costs[1]);
+            }
+
+            public List<String> getLevels() {
+                return levels;
+            }
+
+            private Item item = new Item();
+
+            public boolean isEnabled(){
+                return this.enabled;
+            }
+
+            public double getDefaultAmount() {
+                return defaultAmount;
+            }
+
+            public Item item(){
+                return item;
+            }
+
+            public class Item {
+                private String type = "GOLDEN_HOE";
+
+                private String name = "&d&lTokens";
+
+                private int slot = 11;
+
+                private int damage = 0;
+
+                public int getSlot() {
+                    return slot;
+                }
+
+                private List<String> lore = new ArrayList<String>(){
+                    {
+                        this.add("&7");
+                        this.add("&d* &eLevel 1");
+                        this.add("&ePrice: &a${PRICE_1}");
+                        this.add("&eAmount: &c{AMOUNT_1}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 2");
+                        this.add("&ePrice: &a${PRICE_2}");
+                        this.add("&eAmount: &c{AMOUNT_2}");
+                        this.add("&7");
+                        this.add("&d* &eLevel 3");
+                        this.add("&ePrice: &a${PRICE_3}");
+                        this.add("&eAmount: &c{AMOUNT_3}");
+                        this.add("&7");
+                        this.add("&7Current Level: &d&n{LEVEL}");
+                    }
+                };
+
+                public SimpleItem getItem(){
+                    return SimpleItem.builder().setMaterial(Material.valueOf(type))
+                            .setData((short) damage)
+                            .setLore(lore)
+                            .setName(TextUtil.parseColor(name))
+                            .build();
+                }
+            }
+        }
+
         public class Filler {
-            private String type = "STAINED_GLASS_PANE";
+            private String type = "BLACK_STAINED_GLASS_PANE";
 
             private String name = "&7";
 
@@ -3164,7 +3744,7 @@ public class MainConfig {
 
             private List<String> lore = new ArrayList<>();
 
-            public SimpleItem getItem(){
+            public SimpleItem getItem() {
                 return SimpleItem.builder().setMaterial(Material.valueOf(type))
                         .setData((short) damage)
                         .setLore(lore)
@@ -3179,6 +3759,41 @@ public class MainConfig {
 
         public CropBoost cropBoost(){
             return this.cropBoost;
+        }
+
+        private Exp exp = new Exp();
+        public Exp exp() {
+            return this.exp;
+        }
+
+        private Sandbots sandbots = new Sandbots();
+
+        public Sandbots sandbots() {
+            return this.sandbots;
+        }
+
+        private DamageIncrease damageIncrease = new DamageIncrease();
+
+        public DamageIncrease damageIncrease() {
+            return this.damageIncrease;
+        }
+
+        private DamageReduction damageReduction = new DamageReduction();
+
+        public DamageReduction damageReduction() {
+            return this.damageReduction;
+        }
+
+        private Mobcoins mobcoins = new Mobcoins();
+
+        public Mobcoins mobcoins() {
+            return this.mobcoins;
+        }
+
+        private Tokens tokens = new Tokens();
+
+        public Tokens tokens() {
+            return this.tokens;
         }
 
         public Filler filler(){return this.filler;}
@@ -3201,12 +3816,12 @@ public class MainConfig {
             return this.spawnerBoost;
         }
 
-        private String guiTitle = "&c&lFaction Upgrades";
+        private String guiTitle = "&8Faction Upgrades";
 
         public String guiTitle(){return guiTitle;}
 
         public class GUI {
-            private int rows = 1;
+            private int rows = 5;
 
             public int getRows() {
                 return rows;
@@ -3217,7 +3832,7 @@ public class MainConfig {
             }
 
             public class Filler {
-                private String type = "STAINED_GLASS_PANE";
+                private String type = "BLACK_STAINED_GLASS_PANE";
 
                 private String name = "&7";
 
@@ -3231,6 +3846,9 @@ public class MainConfig {
                     ItemStack itemStack = new ItemStack(Material.valueOf(type), 1, (short) damage);
 
                     ItemMeta itemMeta = itemStack.getItemMeta();
+
+                    itemMeta.addEnchant(Enchantment.LUCK, 1, true);
+                    itemMeta.getItemFlags().add(ItemFlag.HIDE_ENCHANTS);
 
                     itemMeta.setDisplayName(TextUtil.parseColor(name));
 

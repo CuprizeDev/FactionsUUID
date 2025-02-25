@@ -65,6 +65,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected long lastDTRUpdateTime;
     protected long frozenDTRUntilTime;
     protected int tntBank = 0;
+    protected List<Map<String, Object>> sandBotLocations = new ArrayList<>();
     protected String altJoinString = "-1";
     protected transient OfflinePlayer offlinePlayer;
 
@@ -575,6 +576,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     public MemoryFaction(String id) {
         this.id = id;
         this.tntBank = 0;
+        this.sandBotLocations = new ArrayList<>();
         this.open = FactionsPlugin.getInstance().conf().factions().other().isNewFactionsDefaultOpen();
         this.tag = "???";
         this.description = TL.GENERIC_DEFAULTDESCRIPTION.toString();
@@ -600,6 +602,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     public MemoryFaction(MemoryFaction old) {
         id = old.id;
         tntBank = old.tntBank;
+        sandBotLocations = old.sandBotLocations;
         peacefulExplosionsEnabled = old.peacefulExplosionsEnabled;
         permanent = old.permanent;
         tag = old.tag;
@@ -867,6 +870,26 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
 
     public int getLandRoundedInWorld(String worldName) {
         return Board.getInstance().getFactionCoordCountInWorld(this, worldName);
+    }
+
+    public int getSandBotCount() {
+        return this.sandBotLocations.size();
+    }
+
+    public void addSandBotLocation(Location location) {
+        this.sandBotLocations.add(location.serialize());
+    }
+
+    public void removeSandBotLocation(Location location) {
+        this.sandBotLocations.remove(location.serialize());
+    }
+
+    public void setSandBotLocations(List<Map<String, Object>> locations) {
+        this.sandBotLocations = locations == null ? Collections.emptyList() : new ArrayList<>(locations);
+    }
+
+    public List<Map<String, Object>> getSandBotLocations() {
+        return sandBotLocations;
     }
 
     public int getTNTBank() {
@@ -1252,6 +1275,11 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         return FactionsPlugin.getInstance().conf().upgrades().tnt().getNumber(this.getUpgrade(UpgradeType.TNT));
     }
 
+    public int getMaxSandBots() {
+        if(!FactionsPlugin.getInstance().conf().upgrades().sandbots().isEnabled()) return FactionsPlugin.getInstance().conf().upgrades().tnt().getNumber(this.getUpgrade(UpgradeType.SANDBOTS));
+        return 100;
+    }
+
     public Set<String> getOwnerList(FLocation loc) {
         return claimOwnership.get(loc);
     }
@@ -1434,6 +1462,156 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
                 Econ.withdraw(user, cost);
 
                 user.msg(TL.COMMAND_UPGRADE_SUCCESSFUL, "Crop Boost", currentLevel + 1);
+
+                this.upgrades.put(type, currentLevel + 1);
+                return true;
+            case EXP:
+                maxLevel = FactionsPlugin.getInstance().conf().upgrades().exp().getLevels().size();
+
+                currentLevel = getUpgrade(type);
+
+                if(currentLevel + 1 > maxLevel){
+                    user.msg(TL.COMMAND_UPGRADE_ALREADY_MAX);
+                    return false;
+                }
+
+                money = (long) Econ.getBalance(user);
+
+                cost = FactionsPlugin.getInstance().conf().upgrades().exp().getCost(currentLevel + 1);
+
+                if(cost > money){
+                    user.msg(TL.COMMAND_UPGRADE_NOT_ENOUGH);
+                    return false;
+                }
+
+                Econ.withdraw(user, cost);
+
+                user.msg(TL.COMMAND_UPGRADE_SUCCESSFUL, "Exp", currentLevel + 1);
+
+                this.upgrades.put(type, currentLevel + 1);
+                return true;
+            case SANDBOTS:
+                maxLevel = FactionsPlugin.getInstance().conf().upgrades().sandbots().getLevels().size();
+
+                currentLevel = getUpgrade(type);
+
+                if(currentLevel + 1 > maxLevel){
+                    user.msg(TL.COMMAND_UPGRADE_ALREADY_MAX);
+                    return false;
+                }
+
+                money = (long) Econ.getBalance(user);
+
+                cost = FactionsPlugin.getInstance().conf().upgrades().sandbots().getCost(currentLevel + 1);
+
+                if(cost > money){
+                    user.msg(TL.COMMAND_UPGRADE_NOT_ENOUGH);
+                    return false;
+                }
+
+                Econ.withdraw(user, cost);
+
+                user.msg(TL.COMMAND_UPGRADE_SUCCESSFUL, "Sandbots", currentLevel + 1);
+
+                this.upgrades.put(type, currentLevel + 1);
+                return true;
+            case DAMAGE_INCREASE:
+                maxLevel = FactionsPlugin.getInstance().conf().upgrades().damageIncrease().getLevels().size();
+
+                currentLevel = getUpgrade(type);
+
+                if(currentLevel + 1 > maxLevel){
+                    user.msg(TL.COMMAND_UPGRADE_ALREADY_MAX);
+                    return false;
+                }
+
+                money = (long) Econ.getBalance(user);
+
+                cost = FactionsPlugin.getInstance().conf().upgrades().damageIncrease().getCost(currentLevel + 1);
+
+                if(cost > money){
+                    user.msg(TL.COMMAND_UPGRADE_NOT_ENOUGH);
+                    return false;
+                }
+
+                Econ.withdraw(user, cost);
+
+                user.msg(TL.COMMAND_UPGRADE_SUCCESSFUL, "Damage Increase", currentLevel + 1);
+
+                this.upgrades.put(type, currentLevel + 1);
+                return true;
+            case DAMAGE_REDUCTION:
+                maxLevel = FactionsPlugin.getInstance().conf().upgrades().damageReduction().getLevels().size();
+
+                currentLevel = getUpgrade(type);
+
+                if(currentLevel + 1 > maxLevel){
+                    user.msg(TL.COMMAND_UPGRADE_ALREADY_MAX);
+                    return false;
+                }
+
+                money = (long) Econ.getBalance(user);
+
+                cost = FactionsPlugin.getInstance().conf().upgrades().damageReduction().getCost(currentLevel + 1);
+
+                if(cost > money){
+                    user.msg(TL.COMMAND_UPGRADE_NOT_ENOUGH);
+                    return false;
+                }
+
+                Econ.withdraw(user, cost);
+
+                user.msg(TL.COMMAND_UPGRADE_SUCCESSFUL, "Damage Reduction", currentLevel + 1);
+
+                this.upgrades.put(type, currentLevel + 1);
+                return true;
+            case MOBCOINS:
+                maxLevel = FactionsPlugin.getInstance().conf().upgrades().mobcoins().getLevels().size();
+
+                currentLevel = getUpgrade(type);
+
+                if(currentLevel + 1 > maxLevel){
+                    user.msg(TL.COMMAND_UPGRADE_ALREADY_MAX);
+                    return false;
+                }
+
+                money = (long) Econ.getBalance(user);
+
+                cost = FactionsPlugin.getInstance().conf().upgrades().mobcoins().getCost(currentLevel + 1);
+
+                if(cost > money){
+                    user.msg(TL.COMMAND_UPGRADE_NOT_ENOUGH);
+                    return false;
+                }
+
+                Econ.withdraw(user, cost);
+
+                user.msg(TL.COMMAND_UPGRADE_SUCCESSFUL, "Mobcoins", currentLevel + 1);
+
+                this.upgrades.put(type, currentLevel + 1);
+                return true;
+            case TOKENS:
+                maxLevel = FactionsPlugin.getInstance().conf().upgrades().tokens().getLevels().size();
+
+                currentLevel = getUpgrade(type);
+
+                if(currentLevel + 1 > maxLevel){
+                    user.msg(TL.COMMAND_UPGRADE_ALREADY_MAX);
+                    return false;
+                }
+
+                money = (long) Econ.getBalance(user);
+
+                cost = FactionsPlugin.getInstance().conf().upgrades().tokens().getCost(currentLevel + 1);
+
+                if(cost > money){
+                    user.msg(TL.COMMAND_UPGRADE_NOT_ENOUGH);
+                    return false;
+                }
+
+                Econ.withdraw(user, cost);
+
+                user.msg(TL.COMMAND_UPGRADE_SUCCESSFUL, "Tokens", currentLevel + 1);
 
                 this.upgrades.put(type, currentLevel + 1);
                 return true;

@@ -1,22 +1,18 @@
 package com.massivecraft.factions.gui;
 
 import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.data.MemoryFaction;
-import com.massivecraft.factions.perms.PermissibleAction;
-import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.util.TextUtil;
 import com.massivecraft.factions.util.UpgradeType;
-import com.massivecraft.factions.util.material.MaterialDb;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class UpgradeGUI extends GUI<UpgradeType>{
+public class UpgradeGUI extends GUI<UpgradeType> {
     private static final Map<UpgradeType, SimpleItem> items;
 
     static {
@@ -29,6 +25,19 @@ public class UpgradeGUI extends GUI<UpgradeType>{
         items.put(UpgradeType.SPAWNER_BOOST, FactionsPlugin.getInstance().conf().upgrades().spawnerBoost().item().getItem());
 
         items.put(UpgradeType.CROP_BOOST, FactionsPlugin.getInstance().conf().upgrades().cropBoost().item().getItem());
+
+        items.put(UpgradeType.EXP, FactionsPlugin.getInstance().conf().upgrades().exp().item().getItem());
+
+        items.put(UpgradeType.SANDBOTS, FactionsPlugin.getInstance().conf().upgrades().sandbots().item().getItem());
+
+        items.put(UpgradeType.DAMAGE_INCREASE, FactionsPlugin.getInstance().conf().upgrades().damageIncrease().item().getItem());
+
+        items.put(UpgradeType.DAMAGE_REDUCTION, FactionsPlugin.getInstance().conf().upgrades().damageReduction().item().getItem());
+
+        items.put(UpgradeType.MOBCOINS, FactionsPlugin.getInstance().conf().upgrades().mobcoins().item().getItem());
+
+        items.put(UpgradeType.TOKENS, FactionsPlugin.getInstance().conf().upgrades().tokens().item().getItem());
+
     }
 
     public UpgradeGUI(FPlayer user) {
@@ -82,6 +91,60 @@ public class UpgradeGUI extends GUI<UpgradeType>{
 
                 toReturn = toReturn.replace("{LEVEL}", user.getFaction().getUpgrade(upgradeType) + "");
                 break;
+            case EXP:
+                for(int z = 1; z <= FactionsPlugin.getInstance().conf().upgrades().exp().getLevels().size(); z++){
+                    toReturn = toReturn.replace("{AMOUNT_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().exp().getNumber(z));
+
+                    toReturn = toReturn.replace("{PRICE_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().exp().getCost(z));
+                }
+
+                toReturn = toReturn.replace("{LEVEL}", user.getFaction().getUpgrade(upgradeType) + "");
+                break;
+            case SANDBOTS:
+                for(int z = 1; z <= FactionsPlugin.getInstance().conf().upgrades().sandbots().getLevels().size(); z++){
+                    toReturn = toReturn.replace("{AMOUNT_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().sandbots().getNumber(z));
+
+                    toReturn = toReturn.replace("{PRICE_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().sandbots().getCost(z));
+                }
+
+                toReturn = toReturn.replace("{LEVEL}", user.getFaction().getUpgrade(upgradeType) + "");
+                break;
+            case DAMAGE_INCREASE:
+                for(int z = 1; z <= FactionsPlugin.getInstance().conf().upgrades().damageIncrease().getLevels().size(); z++){
+                    toReturn = toReturn.replace("{AMOUNT_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().damageIncrease().getNumber(z));
+
+                    toReturn = toReturn.replace("{PRICE_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().damageIncrease().getCost(z));
+                }
+
+                toReturn = toReturn.replace("{LEVEL}", user.getFaction().getUpgrade(upgradeType) + "");
+                break;
+            case DAMAGE_REDUCTION:
+                for(int z = 1; z <= FactionsPlugin.getInstance().conf().upgrades().damageReduction().getLevels().size(); z++){
+                    toReturn = toReturn.replace("{AMOUNT_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().damageReduction().getNumber(z));
+
+                    toReturn = toReturn.replace("{PRICE_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().damageReduction().getCost(z));
+                }
+
+                toReturn = toReturn.replace("{LEVEL}", user.getFaction().getUpgrade(upgradeType) + "");
+                break;
+            case MOBCOINS:
+                for(int z = 1; z <= FactionsPlugin.getInstance().conf().upgrades().mobcoins().getLevels().size(); z++){
+                    toReturn = toReturn.replace("{AMOUNT_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().mobcoins().getNumber(z));
+
+                    toReturn = toReturn.replace("{PRICE_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().mobcoins().getCost(z));
+                }
+
+                toReturn = toReturn.replace("{LEVEL}", user.getFaction().getUpgrade(upgradeType) + "");
+                break;
+            case TOKENS:
+                for(int z = 1; z <= FactionsPlugin.getInstance().conf().upgrades().tokens().getLevels().size(); z++){
+                    toReturn = toReturn.replace("{AMOUNT_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().tokens().getNumber(z));
+
+                    toReturn = toReturn.replace("{PRICE_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().tokens().getCost(z));
+                }
+
+                toReturn = toReturn.replace("{LEVEL}", user.getFaction().getUpgrade(upgradeType) + "");
+                break;
         }
         return toReturn;
     }
@@ -96,7 +159,6 @@ public class UpgradeGUI extends GUI<UpgradeType>{
 
         if(((MemoryFaction) user.getFaction()).doUpgrade(action, user)){
             ((MemoryFaction) user.getFaction()).commitUpgrade(action);
-
             user.getPlayer().closeInventory();
         }
     }
@@ -112,6 +174,18 @@ public class UpgradeGUI extends GUI<UpgradeType>{
             map.put(FactionsPlugin.getInstance().conf().upgrades().spawnerBoost().item().getSlot(), UpgradeType.SPAWNER_BOOST);
         if(FactionsPlugin.getInstance().conf().upgrades().cropBoost().isEnabled())
             map.put(FactionsPlugin.getInstance().conf().upgrades().cropBoost().item().getSlot(), UpgradeType.CROP_BOOST);
+        if(FactionsPlugin.getInstance().conf().upgrades().exp().isEnabled())
+            map.put(FactionsPlugin.getInstance().conf().upgrades().exp().item().getSlot(), UpgradeType.EXP);
+        if(FactionsPlugin.getInstance().conf().upgrades().sandbots().isEnabled())
+            map.put(FactionsPlugin.getInstance().conf().upgrades().sandbots().item().getSlot(), UpgradeType.SANDBOTS);
+        if(FactionsPlugin.getInstance().conf().upgrades().damageIncrease().isEnabled())
+            map.put(FactionsPlugin.getInstance().conf().upgrades().damageIncrease().item().getSlot(), UpgradeType.DAMAGE_INCREASE);
+        if(FactionsPlugin.getInstance().conf().upgrades().damageIncrease().isEnabled())
+            map.put(FactionsPlugin.getInstance().conf().upgrades().damageReduction().item().getSlot(), UpgradeType.DAMAGE_REDUCTION);
+        if(FactionsPlugin.getInstance().conf().upgrades().mobcoins().isEnabled())
+            map.put(FactionsPlugin.getInstance().conf().upgrades().mobcoins().item().getSlot(), UpgradeType.MOBCOINS);
+        if(FactionsPlugin.getInstance().conf().upgrades().mobcoins().isEnabled())
+            map.put(FactionsPlugin.getInstance().conf().upgrades().tokens().item().getSlot(), UpgradeType.TOKENS);
         return map;
     }
 

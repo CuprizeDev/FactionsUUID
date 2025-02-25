@@ -395,6 +395,8 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         getServer().getPluginManager().registerEvents(new FactionsEntityListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsExploitListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsBlockListener(this), this);
+        getServer().getPluginManager().registerEvents(new VitalCoreListener(this), this);
+        getServer().getPluginManager().registerEvents(new FKoreListener(this), this);
         if (mcVersion >= 800) {
             getServer().getPluginManager().registerEvents(new OneEightPlusListener(this), this);
         }
