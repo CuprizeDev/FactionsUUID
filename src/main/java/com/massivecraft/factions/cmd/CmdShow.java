@@ -12,6 +12,7 @@ import com.massivecraft.factions.tag.FancyTag;
 import com.massivecraft.factions.tag.Tag;
 import com.massivecraft.factions.util.MiscUtil;
 import com.massivecraft.factions.util.TL;
+import com.vitaldev.vitallibs.util.ChatUtil;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -95,7 +96,7 @@ public class CmdShow extends FCommand {
                 message = Tag.parsePlain(faction, context.fPlayer, message);
                 context.msg(plugin.txt().parse(message));
             }
-            return; // we only show header for non-normal factions
+            return;
         }
 
         List<String> messageList = new ArrayList<>();
@@ -119,7 +120,7 @@ public class CmdShow extends FCommand {
                     parsed = parsed.substring(0, parsed.indexOf("{ig}")) + TL.COMMAND_SHOW_NOHOME.toString();
                 }
                 parsed = parsed.replace("%", ""); // Just in case it got in there before we disallowed it.
-                messageList.add(parsed);
+                messageList.add(ChatUtil.color(parsed));
             }
         }
         if (context.fPlayer != null && this.groupPresent()) {
@@ -136,7 +137,7 @@ public class CmdShow extends FCommand {
     private void sendMessages(List<String> messageList, CommandSender recipient, Faction faction, FPlayer player, Map<UUID, String> groupMap) {
         FancyTag tag;
         for (String parsed : messageList) {
-            if ((tag = FancyTag.getMatch(parsed)) != null) {
+            if ((tag = FancyTag.getMatch(ChatUtil.color(parsed))) != null) {
                 if (player != null) {
                     List<FancyMessage> fancy = FancyTag.parse(parsed, faction, player, groupMap);
                     if (fancy != null) {

@@ -11,6 +11,8 @@ import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.UpgradeType;
+import com.vitaldev.events.Events;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Enderman;
@@ -36,6 +38,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
@@ -69,17 +72,15 @@ public class FactionsEntityListener extends AbstractListener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityDamageByPlayer(EntityDamageByEntityEvent event) {
 
-        if (!(event.getDamager() instanceof Player)) {
+        if (!(event.getDamager() instanceof Player damager)) {
             return;
         }
 
-        if (!(event.getEntity() instanceof Player)) {
+        if (!(event.getEntity() instanceof Player target)) {
             return;
         }
 
-        Player damager = (Player) event.getDamager();
         Faction damagerFaction = FPlayers.getInstance().getByPlayer(damager).getFaction();
-        Player target = (Player) event.getEntity();
         Faction targetFaction = FPlayers.getInstance().getByPlayer(target).getFaction();
 
         double damageIncrease = event.getDamage()*FactionsPlugin.getInstance().conf().upgrades().damageIncrease()
@@ -101,16 +102,14 @@ public class FactionsEntityListener extends AbstractListener {
             return;
         }
 
-        if (event instanceof EntityDamageByEntityEvent) {
-            EntityDamageByEntityEvent sub = (EntityDamageByEntityEvent) event;
+        if (event instanceof EntityDamageByEntityEvent sub) {
             if (!this.canDamagerHurtDamagee(sub, true)) {
                 event.setCancelled(true);
             }
         } else if (FactionsPlugin.getInstance().conf().factions().protection().isSafeZonePreventAllDamageToPlayers() && isPlayerInSafeZone(event.getEntity())) {
             // Players can not take any damage in a Safe Zone
             event.setCancelled(true);
-        } else if (event.getCause() == EntityDamageEvent.DamageCause.FALL && event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+        } else if (event.getCause() == EntityDamageEvent.DamageCause.FALL && event.getEntity() instanceof Player player) {
             FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
             if (fPlayer != null && !fPlayer.shouldTakeFallDamage()) {
                 event.setCancelled(true); // Falling after /f fly
@@ -130,8 +129,7 @@ public class FactionsEntityListener extends AbstractListener {
         if (event instanceof EntityDamageByEntityEvent) {
             Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
 
-            if (damager instanceof Projectile) {
-                Projectile projectile = (Projectile) damager;
+            if (damager instanceof Projectile projectile) {
 
                 if (projectile.getShooter() instanceof Entity) {
                     damager = (Entity) projectile.getShooter();
@@ -243,8 +241,7 @@ public class FactionsEntityListener extends AbstractListener {
             return;
         }
 
-        if (thrower instanceof Player) {
-            Player player = (Player) thrower;
+        if (thrower instanceof Player player) {
             FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
             if (badjuju && fPlayer.getFaction().isPeaceful()) {
                 event.setCancelled(true);
@@ -278,8 +275,7 @@ public class FactionsEntityListener extends AbstractListener {
 
     public static boolean canDamage(Entity damager, Entity damagee, boolean notify) {
         // for damage caused by projectiles, getDamager() returns the projectile... what we need to know is the source
-        if (damager instanceof Projectile) {
-            Projectile projectile = (Projectile) damager;
+        if (damager instanceof Projectile projectile) {
 
             if (!(projectile.getShooter() instanceof Entity)) {
                 return true;
@@ -288,8 +284,7 @@ public class FactionsEntityListener extends AbstractListener {
             damager = (Entity) projectile.getShooter();
         }
 
-        if (damager instanceof Player) {
-            Player player = (Player) damager;
+        if (damager instanceof Player player) {
             Material material = null;
             switch (damagee.getType()) {
                 case ITEM_FRAME:
@@ -422,6 +417,17 @@ public class FactionsEntityListener extends AbstractListener {
             return true;
         }
 
+        // Players in LMS can hurt anyone
+
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("VitalEvents");
+
+        if (plugin instanceof Events events && plugin.isEnabled()) {
+
+            if (events.getLmsEvent().isParticipant(attacker.getPlayer())) {
+                return true;
+            }
+        }
+
         // You can never hurt faction members or allies
         if (relation.isMember() || relation.isAlly() || relation.isTruce()) {
             if (!attacker.isFriendlyFireOn() || !defender.isFriendlyFireOn()) {
@@ -435,13 +441,22 @@ public class FactionsEntityListener extends AbstractListener {
         boolean ownTerritory = defender.isInOwnTerritory();
 
         // You can not hurt neutrals in their own territory.
-        if (ownTerritory && relation.isNeutral()) {
+        if (ownTerritory && relation.isNeutral() && facConf.pvp().isDisablePVPBetweenNeutralFactions()) {
             if (notify) {
                 attacker.msg(TL.PLAYER_PVP_NEUTRALFAIL, defender.describeTo(attacker));
                 defender.msg(TL.PLAYER_PVP_TRIED, attacker.describeTo(defender, true));
             }
-            return false;
+            return true;
         }
+
+        if (defendFaction.isWilderness() && facConf.pvp().isDisablePVPForFactionlessPlayers()) {
+            if (notify) {
+                attacker.msg(TL.PLAYER_PVP_NEUTRALFAIL, defender.describeTo(attacker));
+                defender.msg(TL.PLAYER_PVP_TRIED, attacker.describeTo(defender, true));
+            }
+            return true;
+        }
+
 
         // Damage will be dealt. However check if the damage should be reduced.
         /*

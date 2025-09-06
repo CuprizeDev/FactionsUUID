@@ -1,16 +1,23 @@
 package com.massivecraft.factions.listeners;
 
-import com.golfing8.kore.event.StackedEntityDeathEvent;
+import com.golfing8.kore.event.RaidingOutpostResetEvent;
+import com.golfing8.kore.event.roam.PlayerRoamEnterEvent;
+import com.golfing8.kore.event.roam.PlayerRoamExitEvent;
 import com.golfing8.kore.event.sandbot.SandBotBreakEvent;
 import com.golfing8.kore.event.sandbot.SandBotPlaceEvent;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.FactionsPlugin;
+import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.UpgradeType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FKoreListener implements Listener {
 
@@ -48,4 +55,38 @@ public class FKoreListener implements Listener {
         faction.removeSandBotLocation(event.getSandBot().getLocation());
     }
 
+    @EventHandler
+    public void onSandBotRemove(RaidingOutpostResetEvent event) {
+        if(!FactionsPlugin.getInstance().conf().upgrades().sandbots().isEnabled()) {
+            return;
+        }
+
+    }
+
+    List<Player> flying = new ArrayList<>();
+
+    @EventHandler
+    public void onEnterRoam(PlayerRoamEnterEvent event) {
+
+        Player player = event.getPlayer();
+
+        if (player.isFlying() && FPlayers.getInstance().getByPlayer(player).isFlying()) {
+            flying.add(player);
+        }
+
+    }
+
+    @EventHandler
+    public void onExitRoam(PlayerRoamExitEvent event) {
+        Player player = event.getPlayer();
+        if (flying.contains(player)) {
+
+            if (FPlayers.getInstance().getByPlayer(player).getRelationToLocation() == Relation.ENEMY) {
+                return;
+            }
+
+            player.setAllowFlight(true);
+            FPlayers.getInstance().getByPlayer(player).setFlying(true);
+        }
+    }
 }

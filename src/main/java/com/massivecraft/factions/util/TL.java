@@ -16,6 +16,8 @@
  */
 package com.massivecraft.factions.util;
 
+
+import com.vitaldev.vitallibs.util.ChatUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -1174,7 +1176,7 @@ public enum TL {
 
     @Override
     public String toString() {
-        return this == TITLE ? ChatColor.translateAlternateColorCodes('&', LANG.getString(this.path, def)) + " " : ChatColor.translateAlternateColorCodes('&', LANG.getString(this.path, def));
+        return this == TITLE ? ChatUtil.color(LANG.getString(this.path, def)) + " " : ChatUtil.color(LANG.getString(this.path, def));
     }
 
     public String format(Object... args) {
