@@ -7,10 +7,7 @@ import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.FactionsPlugin;
-import com.massivecraft.factions.event.FPlayerLeaveEvent;
-import com.massivecraft.factions.event.FPlayerToggleStealthEvent;
-import com.massivecraft.factions.event.FactionAutoDisbandEvent;
-import com.massivecraft.factions.event.LandClaimEvent;
+import com.massivecraft.factions.event.*;
 import com.massivecraft.factions.iface.EconomyParticipator;
 import com.massivecraft.factions.iface.RelationParticipator;
 import com.massivecraft.factions.integration.CombatTagPlusIntegration;
@@ -706,7 +703,17 @@ public abstract class MemoryFPlayer implements FPlayer {
         }
 
         int millisPerMinute = 60 * 1000;
-        this.alterPower(millisPassed * FactionsPlugin.getInstance().conf().factions().landRaidControl().power().getPowerPerMinute() / millisPerMinute);
+        double powerGained = millisPassed * FactionsPlugin.getInstance().conf().factions().landRaidControl().power().getPowerPerMinute() / millisPerMinute;
+        this.alterPower(powerGained);
+        if (Bukkit.isPrimaryThread()) {
+            FPlayerCalculatePowerEvent powerEvent = new FPlayerCalculatePowerEvent(getFaction(), this, this.power, powerGained);
+            Bukkit.getPluginManager().callEvent(powerEvent);
+        } else {
+            Bukkit.getScheduler().runTask(FactionsPlugin.getInstance(), () -> {
+                FPlayerCalculatePowerEvent powerEvent = new FPlayerCalculatePowerEvent(getFaction(), this, this.power, powerGained);
+                Bukkit.getPluginManager().callEvent(powerEvent);
+            });
+        }
     }
 
     public void losePowerFromBeingOffline() {
@@ -1149,6 +1156,10 @@ public abstract class MemoryFPlayer implements FPlayer {
     }
 
     public void setFlying(boolean fly, boolean damage) {
+        // Don't do anything if flight is disabled.
+        if (!FactionsPlugin.getInstance().getConfigManager().getMainConfig().commands().fly().isEnable())
+            return;
+
         if(fly && !this.isFlying() && FactionsPlugin.getInstance().isSOTW() && !Permission.SOTW.has(this.getPlayer())){
             this.msg(TL.PLAYER_SOTW_NOFLY);
             return;
@@ -1196,6 +1207,10 @@ public abstract class MemoryFPlayer implements FPlayer {
     }
 
     public void setAutoFlying(boolean autoFly) {
+        // Don't do anything if flight is disabled.
+        if (!FactionsPlugin.getInstance().getConfigManager().getMainConfig().commands().fly().isEnable())
+            return;
+
         msg(TL.COMMAND_FLY_AUTO, autoFly ? TL.GENERIC_ENABLED : TL.GENERIC_DISABLED);
         this.isAutoFlying = autoFly;
     }
@@ -1217,7 +1232,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     }
 
     public boolean canFlyInFactionTerritory(Faction faction) {
-        if(this.getPlayer() != null && Permission.FLY_ANY.has(this.getPlayer()))
+        if(this.getPlayer() != null && (Permission.FLY_ANY.has(this.getPlayer()) || getPlayer().getGameMode() == GameMode.SPECTATOR))
             return true;
 
         if (faction.isWilderness()) {
