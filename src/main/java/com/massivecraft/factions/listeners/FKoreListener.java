@@ -5,18 +5,18 @@ import com.golfing8.kore.event.roam.PlayerRoamEnterEvent;
 import com.golfing8.kore.event.roam.PlayerRoamExitEvent;
 import com.golfing8.kore.event.sandbot.SandBotBreakEvent;
 import com.golfing8.kore.event.sandbot.SandBotPlaceEvent;
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.Faction;
-import com.massivecraft.factions.FactionsPlugin;
+import com.massivecraft.factions.*;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.UpgradeType;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FKoreListener implements Listener {
@@ -64,6 +64,7 @@ public class FKoreListener implements Listener {
     }
 
     List<Player> flying = new ArrayList<>();
+    HashMap<Player, Location> lastStoodAt = new HashMap<>();
 
     @EventHandler
     public void onEnterRoam(PlayerRoamEnterEvent event) {
@@ -72,6 +73,7 @@ public class FKoreListener implements Listener {
 
         if (player.isFlying() && FPlayers.getInstance().getByPlayer(player).isFlying()) {
             flying.add(player);
+            lastStoodAt.put(player, event.getPlayer().getLocation());
         }
 
     }
@@ -80,6 +82,9 @@ public class FKoreListener implements Listener {
     public void onExitRoam(PlayerRoamExitEvent event) {
         Player player = event.getPlayer();
         if (flying.contains(player)) {
+
+            FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
+            fPlayer.setLastStoodAt(new FLocation(lastStoodAt.get(player)));
 
             if (FPlayers.getInstance().getByPlayer(player).getRelationToLocation() == Relation.ENEMY) {
                 return;

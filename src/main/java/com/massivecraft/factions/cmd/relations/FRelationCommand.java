@@ -1,6 +1,7 @@
 package com.massivecraft.factions.cmd.relations;
 
 import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.cmd.CommandContext;
 import com.massivecraft.factions.cmd.CommandRequirements;
@@ -106,6 +107,9 @@ public abstract class FRelationCommand extends FCommand {
     private boolean hasMaxRelations(Faction them, Relation targetRelation, CommandContext context) {
         if (FactionsPlugin.getInstance().conf().factions().maxRelations().isEnabled()) {
             int max = targetRelation.getMax();
+            if (them.getRelationTo(Factions.getInstance().getFactionById("RaidOutpost")).isAlly()) {
+                max++;
+            }
             if (max != -1) {
                 if (context.faction.getRelationCount(targetRelation) >= max) {
                     context.msg(TL.COMMAND_RELATIONS_EXCEEDS_ME, max, targetRelation.getPluralTranslation());

@@ -1,5 +1,7 @@
 package com.massivecraft.factions.listeners;
 
+import com.golfing8.kore.FactionsKore;
+import com.golfing8.kore.feature.RoamFeature;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayer;
@@ -267,6 +269,12 @@ public class FactionsPlayerListener extends AbstractListener {
 
         Player player = event.getPlayer();
         FPlayer me = FPlayers.getInstance().getByPlayer(player);
+
+        // Roam Check
+
+        if (FactionsKore.get().getFeature(RoamFeature.class).inRoam(player)) {
+            return;
+        }
 
         // clear visualization
         if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
@@ -623,6 +631,7 @@ public class FactionsPlayerListener extends AbstractListener {
         // Check the location they're teleporting to and check if they can fly there.
         if (plugin.conf().commands().fly().isEnable() && !me.isAdminBypassing() && !event.getPlayer().hasPermission("essentials.fly")) {
             boolean canFly = me.canFlyAtLocation(to);
+
             if (me.isFlying() && !canFly) {
                 me.setFlying(false, false);
             } else if (me.isAutoFlying() && !me.isFlying() && canFly) {
