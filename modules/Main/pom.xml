@@ -296,25 +296,25 @@
             <systemPath>${project.basedir}/../../locallibs/EssentialsX.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>com.golfing8.events</groupId>
+            <artifactId>EventExpansion</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../locallibs/EventExpansion-1.0-all.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>net.ess3</groupId>
             <artifactId>EssentialsXChat</artifactId>
             <version>2.0.1</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/../../locallibs/EssentialsXChat.jar</systemPath>
-            <exclusions>
-                <exclusion>
-                    <artifactId>bukkit</artifactId>
-                    <groupId>org.bukkit</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>lombok</artifactId>
-                    <groupId>org.projectlombok</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>Essentials</artifactId>
-                    <groupId>net.ess3</groupId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>nl.marido.deluxecombat</groupId>
+            <artifactId>DeluxeCombat</artifactId>
+            <version>1.70.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../locallibs/DeluxeCombat v.1.70.4.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.coreprotect</groupId>

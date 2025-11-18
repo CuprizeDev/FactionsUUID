@@ -8,10 +8,14 @@ import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.UpgradeType;
 import com.massivecraft.factions.util.material.MaterialDb;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,8 +23,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -32,6 +38,50 @@ public class FactionsBlockListener implements Listener {
     public FactionsPlugin plugin;
     public FactionsBlockListener(FactionsPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onIceBreak(BlockBreakEvent event) {
+        Block block = event.getBlock();
+        if (FactionsPlugin.getInstance().conf().netherWater().isEnabled() && block.getType() == Material.ICE &&
+                    event.getPlayer().getWorld().getEnvironment().equals(World.Environment.NETHER)) {
+                Bukkit.getScheduler().runTask(plugin, () -> block.setType(Material.WATER));
+            }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onDispenserDispense(BlockDispenseEvent event) {
+        ItemStack item = event.getItem();
+
+        if (FactionsPlugin.getInstance().conf().netherWater().isEnabled() && event.getBlock().getWorld().getEnvironment().equals(World.Environment.NETHER)) {
+
+                Material type = item.getType();
+
+                Directional directional = (Directional) event.getBlock().getBlockData();
+                BlockFace face = directional.getFacing();
+                Block targetBlock = event.getBlock().getRelative(face);
+
+                if (type == Material.WATER_BUCKET) {
+                    event.setCancelled(true);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            targetBlock.setType(Material.WATER);
+                        }
+                    }.runTaskLater(plugin, 1L);
+                }
+
+                if (type == Material.ICE || type == Material.PACKED_ICE || type == Material.BLUE_ICE) {
+                    event.setCancelled(true);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            targetBlock.setType(Material.WATER);
+                        }
+                    }.runTaskLater(plugin, 1L);
+                }
+            }
+
     }
 
     @EventHandler
@@ -105,7 +155,7 @@ public class FactionsBlockListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         if (!plugin.worldUtil().isEnabled(event.getBlock().getWorld())) {
             return;
@@ -400,13 +450,24 @@ public class FactionsBlockListener implements Listener {
                 return true;
             } else if (!justCheck) {
                 me.msg(TL.PERM_DENIED_TERRITORY, permissibleAction.getShortDescription(), otherFaction.getTag(myFaction));
-                if (location.getBlock().getType() == Material.SCAFFOLDING) {
-                    Material feetBlock = player.getLocation().getBlock().getType();
-                    Material headBlock = player.getLocation().add(0, 1, 0).getBlock().getType();
-                    if ((feetBlock == Material.SCAFFOLDING && headBlock == Material.SCAFFOLDING) || player.isSwimming()) {
-                        player.setVelocity(new Vector(0, 0.25, 0));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 10, 100));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 100));
+
+
+                Block block = location.getBlock();
+                if (block.getType() == Material.SCAFFOLDING) {
+                    Block feetBlock = player.getLocation().getBlock();
+                    Block headBlock = player.getLocation().add(0, 1, 0).getBlock();
+                    if ((feetBlock.getType() == Material.SCAFFOLDING || headBlock.getType() == Material.SCAFFOLDING)
+                            || player.isSwimming()) {
+
+                        if (player.isSwimming()) {
+                            player.setSwimming(false);
+                        }
+
+                        player.setVelocity(new Vector(0, 0.75, 0));
+                        int duration = 10;
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, duration, 1000, false, false));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, duration, 5, false, false));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, duration, 1000, false, false));
                     }
                 }
             }

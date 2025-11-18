@@ -4,6 +4,7 @@ import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.cmd.alts.CmdAlts;
 import com.massivecraft.factions.cmd.claim.*;
 import com.massivecraft.factions.cmd.money.CmdMoney;
+import com.massivecraft.factions.cmd.pvp.CmdPvP;
 import com.massivecraft.factions.cmd.relations.CmdRelationAlly;
 import com.massivecraft.factions.cmd.relations.CmdRelationEnemy;
 import com.massivecraft.factions.cmd.relations.CmdRelationNeutral;
@@ -74,6 +75,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdRelationNeutral cmdRelationNeutral = new CmdRelationNeutral();
     public CmdRelationTruce cmdRelationTruce = new CmdRelationTruce();
     public CmdReload cmdReload = new CmdReload();
+    public CmdPvP cmdPvP = new CmdPvP();
     public CmdSafeunclaimall cmdSafeunclaimall = new CmdSafeunclaimall();
     public CmdSaveAll cmdSaveAll = new CmdSaveAll();
     public CmdSethome cmdSethome = new CmdSethome();
@@ -192,6 +194,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdSaveAll);
         this.addSubCommand(this.cmdSethome);
         this.addSubCommand(this.cmdDelhome);
+        this.addSubCommand(this.cmdPvP);
         this.addSubCommand(this.cmdShow);
         this.addSubCommand(this.cmdStatus);
         this.addSubCommand(this.cmdStuck);

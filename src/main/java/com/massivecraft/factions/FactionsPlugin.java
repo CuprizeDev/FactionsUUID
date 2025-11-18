@@ -1,5 +1,9 @@
 package com.massivecraft.factions;
 
+import com.golfing8.events.feature.conquest.ConquestFeature;
+import com.golfing8.events.feature.dtc.DestroyTheCoreFeature;
+import com.golfing8.events.feature.lms.LMSFeature;
+import com.golfing8.kore.FactionsKore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -395,8 +399,24 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         getServer().getPluginManager().registerEvents(new FactionsEntityListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsExploitListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsBlockListener(this), this);
-        getServer().getPluginManager().registerEvents(new VitalCoreListener(this), this);
-        getServer().getPluginManager().registerEvents(new FKoreListener(this), this);
+
+        if (getServer().getPluginManager().isPluginEnabled("VitalCore")) {
+            getServer().getPluginManager().registerEvents(new VitalCoreListener(this), this);
+        }
+        if (getServer().getPluginManager().isPluginEnabled("VitalEvents")) {
+            getServer().getPluginManager().registerEvents(new VitalEventListener(), this);
+        }
+        if (getServer().getPluginManager().isPluginEnabled("FactionsKore")) {
+            getServer().getPluginManager().registerEvents(new FKoreListener(this), this);
+
+            if (FactionsKore.get().getFeature(ConquestFeature.class).isOn()) {
+                getServer().getPluginManager().registerEvents(new FKoreConquestListener(), this);
+            }
+
+            if (FactionsKore.get().getFeature(LMSFeature.class).isOn()) {
+                getServer().getPluginManager().registerEvents(new FKoreLMSListener(), this);
+            }
+        }
         if (mcVersion >= 800) {
             getServer().getPluginManager().registerEvents(new OneEightPlusListener(this), this);
         }

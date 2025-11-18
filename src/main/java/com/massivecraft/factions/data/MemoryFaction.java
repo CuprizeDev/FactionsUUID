@@ -39,6 +39,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected boolean open;
     protected boolean peaceful;
     protected Integer permanentPower;
+    protected Integer pvpPoints;
     protected LazyLocation home;
     protected long foundedDate;
     protected transient int maxAlts = FactionsPlugin.getInstance().conf().factions().other().maxAlts();
@@ -576,6 +577,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     public MemoryFaction(String id) {
         this.id = id;
         this.tntBank = 0;
+        this.pvpPoints = 0;
         this.sandBotLocations = new ArrayList<>();
         this.open = FactionsPlugin.getInstance().conf().factions().other().isNewFactionsDefaultOpen();
         this.tag = "???";
@@ -602,6 +604,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     public MemoryFaction(MemoryFaction old) {
         id = old.id;
         tntBank = old.tntBank;
+        pvpPoints = old.pvpPoints;
         sandBotLocations = old.sandBotLocations;
         peacefulExplosionsEnabled = old.peacefulExplosionsEnabled;
         permanent = old.permanent;
@@ -788,6 +791,31 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     @Override
     public boolean isFrozenDTR() {
         return System.currentTimeMillis() < this.frozenDTRUntilTime;
+    }
+
+    // ----------------------------------------------//
+    // PvP Points
+    // ----------------------------------------------//
+
+    public int getPvPPoints() {
+
+        if (this.pvpPoints == null) {
+            return 0;
+        }
+
+        return this.pvpPoints;
+    }
+
+    public void addPvPPoints(int points) {
+        this.pvpPoints+=points;
+    }
+
+    public void removePvPPoints(int points) {
+        this.pvpPoints-=points;
+    }
+
+    public void setPvPPoints(int points) {
+        this.pvpPoints = points;
     }
 
     // ----------------------------------------------//

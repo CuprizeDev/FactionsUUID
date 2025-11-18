@@ -731,6 +731,27 @@ public enum TL {
     COMMAND_TOP_LINE("%d. &6%s: &c%s"), // Rank. Faction: Value
     COMMAND_TOP_INVALID("Could not sort by %s. Try balance, online, members, power or land."),
 
+
+    COMMAND_PVPTOP_DESCRIPTION("Sort Factions to see the top pvp factions"),
+    COMMAND_PVPTOP_TOP("PvP Top Page %d/%d"),
+    COMMAND_PVPTOP_LINE("%d. &6%s: &c%s"), // Rank. Faction: Value
+
+    COMMAND_PVPTOP_HELP_DESCRIPTION("View commands for /f pvptop"),
+
+
+    COMMAND_PVPTOP_INFO_DESCRIPTION("View your faction's pvp points"),
+    COMMAND_PVPTOP_INFO_MESSAGE("&eYour faction has &c%1$s &epvp points!"),
+
+    COMMAND_PVPTOP_TAKE_USAGE("Take pvp points from a faction... We're sorry :("),
+    COMMAND_PVPTOP_TAKE_SUCCESS("&eRemoved %1 points from %1$s&e."),
+    COMMAND_PVPTOP_TAKE_FAIL("&eYou cannot remove anymore points from %1$s&e."),
+
+    COMMAND_PVPTOP_GIVE_USAGE("Give pvp points to a faction."), 
+    COMMAND_PVPTOP_GIVE_SUCCESS("&eAdded %1 points to %1$s&e."),
+
+    COMMAND_PVPTOP_SET_USAGE("Take pvp points from a faction... We're sorry :("),
+    COMMAND_PVPTOP_SET_SUCCESS("&eRemoved &d%s points from %1$s&e."),
+
     COMMAND_UNBAN_DESCRIPTION("Unban someone from your Faction"),
     COMMAND_UNBAN_NOTBANNED("&7%s &cisn't banned. Not doing anything."),
     COMMAND_UNBAN_UNBANNED("&e%1$s &cunbanned &7%2$s"),

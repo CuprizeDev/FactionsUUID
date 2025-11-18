@@ -54,7 +54,7 @@ public abstract class FRelationCommand extends FCommand {
             return;
         }
 
-        if (hasMaxRelations(them, targetRelation, context)) {
+        if (hasMaxRelations(context.faction, them, targetRelation, context)) {
             // We message them down there with the count.
             return;
         }
@@ -104,11 +104,15 @@ public abstract class FRelationCommand extends FCommand {
         FTeamWrapper.updatePrefixes(them);
     }
 
-    private boolean hasMaxRelations(Faction them, Relation targetRelation, CommandContext context) {
+    private boolean hasMaxRelations(Faction you, Faction them, Relation targetRelation, CommandContext context) {
         if (FactionsPlugin.getInstance().conf().factions().maxRelations().isEnabled()) {
             int max = targetRelation.getMax();
-            if (them.getRelationTo(Factions.getInstance().getFactionById("RaidOutpost")).isAlly()) {
-                max++;
+
+            if (targetRelation == Relation.ALLY) {
+                Faction rpost = Factions.getInstance().getByTag("RaidOutpost");
+                if (them.getRelationTo(rpost).isAlly() || you.getRelationTo(rpost).isAlly()) {
+                    max++;
+                }
             }
             if (max != -1) {
                 if (context.faction.getRelationCount(targetRelation) >= max) {

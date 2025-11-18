@@ -88,7 +88,16 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected transient boolean shouldTakeFallDamage = true;
     protected transient OfflinePlayer offlinePlayer;
     protected transient List<String[]> allCurrentInspectData;
+    protected transient List<UUID> lastKilledPlayers;
     protected transient Location currentInspectLocation;
+
+    public boolean isLastKilled(Player player) {
+        return lastKilledPlayers.contains(player);
+    }
+
+    public void addLastKilled(Player player) {
+        
+    }
 
     public Location getCurrentInspectLocation() {
         return currentInspectLocation;

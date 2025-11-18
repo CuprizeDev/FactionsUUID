@@ -99,6 +99,8 @@ public enum Permission {
     POWERBOOST("powerboost"),
     POWER("power"),
     POWER_ANY("power.any"),
+    PVP("pvp"),
+    PVP_MANAGE("pvp.manage"),
     PROMOTE("promote"),
     RELATION("relation"),
     RELOAD("reload"),

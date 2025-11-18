@@ -27,16 +27,18 @@ import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.*;
 import com.massivecraft.factions.util.material.MaterialDb;
 import net.coreprotect.CoreProtect;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import nl.marido.deluxecombat.DeluxeCombat;
+import nl.marido.deluxecombat.api.DeluxeCombatAPI;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.util.CraftMagicNumbers;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -55,6 +57,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.NumberConversions;
 
@@ -129,6 +132,19 @@ public class FactionsPlayerListener extends AbstractListener {
                 }
             }.runTask(FactionsPlugin.getInstance());
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBucketEmpty(PlayerBucketEmptyEvent event) {
+
+        if (FactionsPlugin.getInstance().conf().netherWater().isEnabled() && event.getBucket() == Material.WATER_BUCKET &&
+                    event.getPlayer().getWorld().getEnvironment().equals(World.Environment.NETHER)) {
+
+                Block placed = event.getBlockClicked().getRelative(event.getBlockFace());
+
+                Bukkit.getScheduler().runTask(plugin, () -> placed.setType(Material.WATER));
+            }
+
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -272,8 +288,10 @@ public class FactionsPlayerListener extends AbstractListener {
 
         // Roam Check
 
-        if (FactionsKore.get().getFeature(RoamFeature.class).inRoam(player)) {
-            return;
+        if (plugin.getServer().getPluginManager().isPluginEnabled("FactionsKore")) {
+            if (FactionsKore.get().getFeature(RoamFeature.class).inRoam(player)) {
+                return;
+            }
         }
 
         // clear visualization
@@ -408,6 +426,55 @@ public class FactionsPlayerListener extends AbstractListener {
                 }
                 break;
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPvPPointsListener(EntityDeathEvent event) {
+
+        if (event.getEntityType() != EntityType.PLAYER) {
+            return;
+        }
+
+        if (event.getEntity().getKiller() == null) {
+            return;
+        }
+
+        if (event.getEntity().getKiller().getType() != EntityType.PLAYER) {
+            return;
+        }
+        Player player = (Player) event.getEntity();
+        Player killer = event.getEntity().getKiller();
+
+        if (killer.getAddress().getAddress().equals(player.getAddress().getAddress())) {
+            return;
+        }
+
+        if (!isArmored(player) || !isArmored(killer)) {
+            return;
+        }
+
+        Faction faction = FPlayers.getInstance().getByPlayer(killer).getFaction();
+        faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getPointPerKill());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerFireDamage(EntityDamageEvent event) {
+
+        if (event.getEntityType() != EntityType.PLAYER) {
+            return;
+        }
+
+        if (event.getCause() != EntityDamageEvent.DamageCause.LAVA) {
+            return;
+        }
+
+        Player player = (Player) event.getEntity();
+
+        if (!DeluxeCombat.getAPI().isInCombat(player)) {
+            return;
+        }
+
+        event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -670,6 +737,38 @@ public class FactionsPlayerListener extends AbstractListener {
             event.setCancelled(true);
         }
     }
+
+    private static final Set<Material> REQUIRED = Set.of(
+            Material.NETHERITE_HELMET,
+            Material.NETHERITE_CHESTPLATE,
+            Material.NETHERITE_LEGGINGS,
+            Material.NETHERITE_BOOTS,
+            Material.GOLDEN_HELMET,
+            Material.GOLDEN_CHESTPLATE,
+            Material.GOLDEN_LEGGINGS,
+            Material.GOLDEN_BOOTS
+    );
+
+    public boolean isArmored(Player player) {
+        ItemStack[] armor = player.getInventory().getArmorContents();
+
+        for (ItemStack piece : armor) {
+            // Missing piece
+            if (piece == null || piece.getType() == Material.AIR)
+                return false;
+
+            // Wrong material (not one of the 4 netherite pieces)
+            if (!REQUIRED.contains(piece.getType()))
+                return false;
+
+            // Must be enchanted
+            if (piece.getEnchantments().isEmpty())
+                return false;
+        }
+
+        return true;
+    }
+
 
     public static boolean preventCommand(String fullCmd, Player player) {
         MainConfig.Factions.Protection protection = FactionsPlugin.getInstance().conf().factions().protection();

@@ -215,6 +215,13 @@ public interface Faction extends EconomyParticipator {
     boolean isFrozenDTR();
 
     // ----------------------------------------------//
+    // PvP Points
+    // ----------------------------------------------//
+    int getPvPPoints();
+    void addPvPPoints(int points);
+    void removePvPPoints(int points);
+    void setPvPPoints(int points);
+    // ----------------------------------------------//
     // Power
     // ----------------------------------------------//
     double getPower();

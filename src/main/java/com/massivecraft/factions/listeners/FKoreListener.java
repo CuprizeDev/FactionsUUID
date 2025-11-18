@@ -1,5 +1,6 @@
 package com.massivecraft.factions.listeners;
 
+import com.golfing8.kore.event.KothCaptureEvent;
 import com.golfing8.kore.event.RaidingOutpostResetEvent;
 import com.golfing8.kore.event.roam.PlayerRoamEnterEvent;
 import com.golfing8.kore.event.roam.PlayerRoamExitEvent;
@@ -25,6 +26,19 @@ public class FKoreListener implements Listener {
 
     public FKoreListener(FactionsPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler
+    public void onKothWin(KothCaptureEvent event) {
+
+        Player player = event.getPlayerCapper();
+        Faction faction = FPlayers.getInstance().getByPlayer(player).getFaction();
+
+        if (faction == null) {
+            return;
+        }
+
+        faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getKothPoints());
     }
 
     @EventHandler
@@ -94,4 +108,5 @@ public class FKoreListener implements Listener {
             FPlayers.getInstance().getByPlayer(player).setFlying(true);
         }
     }
+
 }

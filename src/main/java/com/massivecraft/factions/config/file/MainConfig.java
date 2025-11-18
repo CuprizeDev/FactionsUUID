@@ -17,7 +17,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.dynmap.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -288,6 +287,41 @@ public class MainConfig {
             private boolean overrideClaims = true;
 
 
+        }
+
+        public class PvPTop {
+
+            @Comment("This will decide how many points are given per event win")
+            private int ltsPoints = 25;
+            private int lmsPoints = 25;
+            private int dtcPoints = 25;
+            private int kothPoints = 60;
+            private int conquestPoints = 60;
+            private int pointPerKill = 1;
+
+            public int getConquestPoints() {
+                return conquestPoints;
+            }
+
+            public int getDtcPoints() {
+                return dtcPoints;
+            }
+
+            public int getKothPoints() {
+                return kothPoints;
+            }
+
+            public int getLmsPoints() {
+                return lmsPoints;
+            }
+
+            public int getLtsPoints() {
+                return ltsPoints;
+            }
+
+            public int getPointPerKill() {
+                return pointPerKill;
+            }
         }
 
         public class Strike {
@@ -612,10 +646,13 @@ public class MainConfig {
         private ToolTips toolTips = new ToolTips();
         private Warp warp = new Warp();
         private Strike strike = new Strike();
+        private PvPTop pvpTop = new PvPTop();
 
         private Roster roster = new Roster();
 
         public Strike strike(){return strike;}
+
+        public PvPTop pvpTop() {return pvpTop;}
 
         public Disband disband(){return disband;}
 
@@ -3910,6 +3947,14 @@ public class MainConfig {
         }
     }
 
+    public class NetherWater {
+        private boolean enabled = false;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+    }
+
     public class WorldGuard {
         private boolean checking = false;
         private boolean buildPriority = false;
@@ -3983,6 +4028,9 @@ public class MainConfig {
             "Enable faction-owned vaults!\n" +
             "https://www.spigotmc.org/resources/playervaultsx.51204/")
     private PlayerVaults playerVaults = new PlayerVaults();
+    @Comment("Nether Water settings")
+    private NetherWater netherWater = new NetherWater();
+
     @Comment("WorldGuard settings")
     private WorldGuard worldGuard = new WorldGuard();
     private WorldBorder worldBorder = new WorldBorder();
@@ -4073,6 +4121,10 @@ public class MainConfig {
 
     public WorldBorder worldBorder() {
         return worldBorder;
+    }
+
+    public NetherWater netherWater() {
+        return netherWater;
     }
 
     public Data data() {
