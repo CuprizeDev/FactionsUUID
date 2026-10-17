@@ -316,9 +316,11 @@ public class FactionsPlayerListener extends AbstractListener {
             return;
         }
 
-        // Yes we did change coord (:
-
         me.setLastStoodAt(to);
+
+        if (me.isSeeingChunk() && FactionsPlugin.getInstance().getSeeChunkUtil() != null) {
+            FactionsPlugin.getInstance().getSeeChunkUtil().onChunkChange(player, event.getTo());
+        }
 
         boolean canFlyPreClaim = me.canFlyAtLocation();
 
@@ -402,25 +404,32 @@ public class FactionsPlayerListener extends AbstractListener {
             return;
         }
 
-        switch (event.getRightClicked().getType()) {
-            case ITEM_FRAME:
-                if (!canPlayerUseBlock(event.getPlayer(), Material.ITEM_FRAME, event.getRightClicked().getLocation(), false)) {
-                    event.setCancelled(true);
-                }
-                break;
-            case HORSE:
-            case SKELETON_HORSE:
-            case ZOMBIE_HORSE:
-            case DONKEY:
-            case MULE:
-            case LLAMA:
-            case TRADER_LLAMA:
-            case PIG:
-            case LEASH_HITCH:
-            case MINECART_CHEST:
-            case MINECART_FURNACE:
-            case MINECART_HOPPER:
-                if (!FactionsPlugin.getInstance().conf().factions().protection().getEntityInteractExceptions().contains(event.getRightClicked().getType().name()) &&
+        String entityTypeName = event.getRightClicked().getType().name();
+        if (entityTypeName.equals("ITEM_FRAME")) {
+            if (!canPlayerUseBlock(event.getPlayer(), Material.ITEM_FRAME, event.getRightClicked().getLocation(), false)) {
+                event.setCancelled(true);
+            }
+            return;
+        }
+
+        switch (entityTypeName) {
+            case "HORSE":
+            case "SKELETON_HORSE":
+            case "ZOMBIE_HORSE":
+            case "DONKEY":
+            case "MULE":
+            case "LLAMA":
+            case "TRADER_LLAMA":
+            case "PIG":
+            case "LEASH_HITCH":
+            case "LEASH_KNOT":
+            case "MINECART_CHEST":
+            case "CHEST_MINECART":
+            case "MINECART_FURNACE":
+            case "FURNACE_MINECART":
+            case "MINECART_HOPPER":
+            case "HOPPER_MINECART":
+                if (!FactionsPlugin.getInstance().conf().factions().protection().getEntityInteractExceptions().contains(entityTypeName) &&
                         !this.playerCanInteractHere(event.getPlayer(), event.getRightClicked().getLocation())) {
                     event.setCancelled(true);
                 }
@@ -445,11 +454,7 @@ public class FactionsPlayerListener extends AbstractListener {
         Player player = (Player) event.getEntity();
         Player killer = event.getEntity().getKiller();
 
-        if (killer.getAddress().getAddress().equals(player.getAddress().getAddress())) {
-            return;
-        }
-
-        if (!isArmored(player) || !isArmored(killer)) {
+        if (!isHalfArmored(player) || !isHalfArmored(killer)) {
             return;
         }
 
@@ -685,6 +690,9 @@ public class FactionsPlayerListener extends AbstractListener {
             if (me.isFlying() && !me.getPlayer().hasPermission("essentials.fly")) {
                 me.setFlying(false);
             }
+            if (me.isSeeingChunk()) {
+                me.setSeeingChunk(false);
+            }
             return;
         }
         if (event.getFrom().getWorld() != null && !event.getFrom().getWorld().equals(event.getTo().getWorld()) && !plugin.worldUtil().isEnabled(event.getPlayer().getWorld())) {
@@ -694,6 +702,10 @@ public class FactionsPlayerListener extends AbstractListener {
 
         FLocation to = new FLocation(event.getTo());
         me.setLastStoodAt(to);
+
+        if (me.isSeeingChunk() && FactionsPlugin.getInstance().getSeeChunkUtil() != null) {
+            FactionsPlugin.getInstance().getSeeChunkUtil().onChunkChange(event.getPlayer(), event.getTo());
+        }
 
         // Check the location they're teleporting to and check if they can fly there.
         if (plugin.conf().commands().fly().isEnable() && !me.isAdminBypassing() && !event.getPlayer().hasPermission("essentials.fly")) {
@@ -739,14 +751,37 @@ public class FactionsPlayerListener extends AbstractListener {
     }
 
     private static final Set<Material> REQUIRED = Set.of(
+            Material.LEATHER_HELMET,
+            Material.LEATHER_CHESTPLATE,
+            Material.LEATHER_LEGGINGS,
+            Material.LEATHER_BOOTS,
+
+            Material.CHAINMAIL_HELMET,
+            Material.CHAINMAIL_CHESTPLATE,
+            Material.CHAINMAIL_LEGGINGS,
+            Material.CHAINMAIL_BOOTS,
+
+            Material.IRON_HELMET,
+            Material.IRON_CHESTPLATE,
+            Material.IRON_LEGGINGS,
+            Material.IRON_BOOTS,
+
+            Material.GOLDEN_HELMET,
+            Material.GOLDEN_CHESTPLATE,
+            Material.GOLDEN_LEGGINGS,
+            Material.GOLDEN_BOOTS,
+
+            Material.DIAMOND_HELMET,
+            Material.DIAMOND_CHESTPLATE,
+            Material.DIAMOND_LEGGINGS,
+            Material.DIAMOND_BOOTS,
+
             Material.NETHERITE_HELMET,
             Material.NETHERITE_CHESTPLATE,
             Material.NETHERITE_LEGGINGS,
             Material.NETHERITE_BOOTS,
-            Material.GOLDEN_HELMET,
-            Material.GOLDEN_CHESTPLATE,
-            Material.GOLDEN_LEGGINGS,
-            Material.GOLDEN_BOOTS
+
+            Material.TURTLE_HELMET
     );
 
     public boolean isArmored(Player player) {
@@ -767,6 +802,19 @@ public class FactionsPlayerListener extends AbstractListener {
         }
 
         return true;
+    }
+
+    public boolean isHalfArmored(Player player) {
+        ItemStack[] armor = player.getInventory().getArmorContents();
+        int enchantedPieceCount = 0;
+        for (ItemStack piece : armor) {
+            if (piece != null && piece.getType() != Material.AIR) {
+                if (!piece.getEnchantments().isEmpty()) {
+                    enchantedPieceCount++;
+                }
+            }
+        }
+        return enchantedPieceCount >= 2;
     }
 
 

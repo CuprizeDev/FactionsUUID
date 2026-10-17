@@ -77,6 +77,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected boolean friendlyFire = false;
 
     protected boolean seeingChunk = false;
+    protected boolean patchCrumbs = false;
 
     protected transient FLocation lastStoodAt = new FLocation(); // Where did this player stand the last time we checked?
     protected transient boolean mapAutoUpdating;
@@ -1284,6 +1285,16 @@ public abstract class MemoryFPlayer implements FPlayer {
         if (FactionsPlugin.getInstance().getSeeChunkUtil() != null) {
             FactionsPlugin.getInstance().getSeeChunkUtil().updatePlayerInfo(UUID.fromString(getId()), seeingChunk);
         }
+    }
+
+    @Override
+    public boolean hasPatchCrumbs() {
+        return patchCrumbs;
+    }
+
+    @Override
+    public void setPatchCrumbs(boolean enabled) {
+        this.patchCrumbs = enabled;
     }
 
     public boolean getFlyTrailsState() {

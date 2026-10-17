@@ -6,7 +6,7 @@ public enum UpgradeType {
     SPAWNER_BOOST,
     CROP_BOOST,
     EXP,
-    SANDBOTS,
+    
     DAMAGE_INCREASE,
     DAMAGE_REDUCTION,
     MOBCOINS,

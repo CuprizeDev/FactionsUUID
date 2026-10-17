@@ -11,7 +11,6 @@ import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.UpgradeType;
-import com.vitaldev.events.Events;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,6 +38,7 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
@@ -216,7 +216,15 @@ public class FactionsEntityListener extends AbstractListener {
         }
     }
 
-    private static final Set<PotionEffectType> badPotionEffects = new LinkedHashSet<>(Arrays.asList(PotionEffectType.BLINDNESS, PotionEffectType.CONFUSION, PotionEffectType.HARM, PotionEffectType.HUNGER, PotionEffectType.POISON, PotionEffectType.SLOW, PotionEffectType.SLOW_DIGGING, PotionEffectType.WEAKNESS, PotionEffectType.WITHER));
+    private static final Set<PotionEffectType> badPotionEffects = new LinkedHashSet<>();
+    static {
+        for (String name : Arrays.asList("BLINDNESS", "CONFUSION", "NAUSEA", "HARM", "INSTANT_DAMAGE", "HUNGER", "POISON", "SLOW", "SLOWNESS", "SLOW_DIGGING", "MINING_FATIGUE", "WEAKNESS", "WITHER")) {
+            PotionEffectType type = PotionEffectType.getByName(name);
+            if (type != null) {
+                badPotionEffects.add(type);
+            }
+        }
+    }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPotionSplashEvent(PotionSplashEvent event) {
@@ -417,16 +425,7 @@ public class FactionsEntityListener extends AbstractListener {
             return true;
         }
 
-        // Players in LMS can hurt anyone
 
-        Plugin plugin = Bukkit.getPluginManager().getPlugin("VitalEvents");
-
-        if (plugin instanceof Events events && plugin.isEnabled()) {
-
-            if (events.getLmsEvent().isParticipant(attacker.getPlayer())) {
-                return true;
-            }
-        }
 
         // You can never hurt faction members or allies
         if (relation.isMember() || relation.isAlly() || relation.isTruce()) {

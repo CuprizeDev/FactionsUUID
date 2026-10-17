@@ -177,15 +177,6 @@ public interface Faction extends EconomyParticipator {
     int getTNTBank();
 
     void setTNTBank(int amount);
-
-    int getSandBotCount();
-
-    List<Map<String, Object>> getSandBotLocations();
-
-    void addSandBotLocation(Location location);
-
-    void removeSandBotLocation(Location location);
-    void setSandBotLocations(List<Map<String, Object>> locations);
     // -------------------------------
     // Relation and relation colors
     // -------------------------------
@@ -344,3 +335,4 @@ public interface Faction extends EconomyParticipator {
 
     OfflinePlayer getOfflinePlayer();
 }
+

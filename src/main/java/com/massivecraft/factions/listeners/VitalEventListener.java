@@ -22,6 +22,15 @@ public class VitalEventListener implements Listener {
         }
 
         switch (event.getEventType()) {
+            case KOTH:
+                faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getKothPoints());
+                break;
+            case CONQUEST:
+                faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getConquestPoints());
+                break;
+            case CITADEL:
+                faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getCitadelPoints());
+                break;
             case DTC:
                 faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getDtcPoints());
                 break;
@@ -30,6 +39,21 @@ public class VitalEventListener implements Listener {
                 break;
             case LMS:
                 faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getLmsPoints());
+                break;
+            case ENVOY:
+                faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getEnvoyPoints());
+                break;
+            case METEORS:
+                faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getMeteorsPoints());
+                break;
+            case MOB:
+                faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getMobPoints());
+                break;
+            case POI:
+                faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getPoiPoints());
+                break;
+            case SPLEEF:
+                faction.addPvPPoints(FactionsPlugin.getInstance().conf().commands().pvpTop().getSpleefPoints());
                 break;
             default:
                 break;

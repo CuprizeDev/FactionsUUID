@@ -664,6 +664,10 @@ public enum TL {
     COMMAND_SEECHUNK_DESCRIPTION("Show chunk boundaries"),
     COMMAND_SEECHUNK_TOGGLE("&eSeechunk &d%1$s"),
 
+    COMMAND_PATCHCRUMBS_DESCRIPTION("Toggle seeing patch crumbs when your faction walls are hit by TNT"),
+    COMMAND_PATCHCRUMBS_ENABLED("&aPatch Crumbs enabled! You will now see breached wall highlights in your territory."),
+    COMMAND_PATCHCRUMBS_DISABLED("&cPatch Crumbs disabled."),
+
     COMMAND_SHOW_NOFACTION_SELF("You are not in a faction"),
     COMMAND_SHOW_NOFACTION_OTHER("That's not a faction"),
     COMMAND_SHOW_TOSHOW("to show faction information"),
@@ -875,7 +879,6 @@ public enum TL {
     GENERIC_YOUSHOULD("&eYou should:"),
     GENERIC_YOUMAYWANT("&eYou may want to: "),
     GENERIC_DISABLEDWORLD("&cFactions is disabled in this world."),
-    GENERIC_SANDBOT_LIMIT("&cYour faction has reached its sandbot limit! Purchase a higher limit in faction upgrades!"),
     GENERIC_YOUMUSTBE("&cYou must be &d%s&c."),
     GENERIC_TRANSLATION_VERSION("Translation: %1$s(%2$s,%3$s) State: %4$s"),
     GENERIC_TRANSLATION_CONTRIBUTORS("Translation contributors: %1$s"),
@@ -1222,3 +1225,4 @@ public enum TL {
         return this.path;
     }
 }
+

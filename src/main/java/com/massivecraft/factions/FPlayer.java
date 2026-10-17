@@ -276,6 +276,10 @@ public interface FPlayer extends EconomyParticipator {
 
     void setSeeingChunk(boolean seeingChunk);
 
+    boolean hasPatchCrumbs();
+
+    void setPatchCrumbs(boolean enabled);
+
     boolean getFlyTrailsState();
 
     void setFlyTrailsState(boolean state);

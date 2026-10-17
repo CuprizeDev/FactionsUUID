@@ -12,7 +12,6 @@ public class FKoreLMSListener implements Listener {
     @EventHandler
     public void onWinLMS(LMSEndEvent event) {
         Faction faction = FPlayers.getInstance().getByPlayer(event.getWinner()).getFaction();
-
         if (faction == null) {
             return;
         }

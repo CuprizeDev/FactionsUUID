@@ -130,6 +130,7 @@ public enum Permission {
     VERSION("version"),
     WARMUP_BYPASS("warmup.bypass"),
     SCOREBOARD("scoreboard"),
+    PATCH_CRUMBS("patchcrumbs"),
     SEECHUNK("seechunk"),
     SETWARP("setwarp"),
     SETPAYPAL("setpaypal"),

@@ -66,7 +66,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected long lastDTRUpdateTime;
     protected long frozenDTRUntilTime;
     protected int tntBank = 0;
-    protected List<Map<String, Object>> sandBotLocations = new ArrayList<>();
     protected String altJoinString = "-1";
     protected transient OfflinePlayer offlinePlayer;
 
@@ -578,7 +577,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.id = id;
         this.tntBank = 0;
         this.pvpPoints = 0;
-        this.sandBotLocations = new ArrayList<>();
         this.open = FactionsPlugin.getInstance().conf().factions().other().isNewFactionsDefaultOpen();
         this.tag = "???";
         this.description = TL.GENERIC_DEFAULTDESCRIPTION.toString();
@@ -605,7 +603,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         id = old.id;
         tntBank = old.tntBank;
         pvpPoints = old.pvpPoints;
-        sandBotLocations = old.sandBotLocations;
         peacefulExplosionsEnabled = old.peacefulExplosionsEnabled;
         permanent = old.permanent;
         tag = old.tag;
@@ -900,25 +897,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         return Board.getInstance().getFactionCoordCountInWorld(this, worldName);
     }
 
-    public int getSandBotCount() {
-        return this.sandBotLocations.size();
-    }
 
-    public void addSandBotLocation(Location location) {
-        this.sandBotLocations.add(location.serialize());
-    }
-
-    public void removeSandBotLocation(Location location) {
-        this.sandBotLocations.remove(location.serialize());
-    }
-
-    public void setSandBotLocations(List<Map<String, Object>> locations) {
-        this.sandBotLocations = locations == null ? Collections.emptyList() : new ArrayList<>(locations);
-    }
-
-    public List<Map<String, Object>> getSandBotLocations() {
-        return sandBotLocations;
-    }
 
     public int getTNTBank() {
         return this.tntBank;
@@ -1303,11 +1282,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         return FactionsPlugin.getInstance().conf().upgrades().tnt().getNumber(this.getUpgrade(UpgradeType.TNT));
     }
 
-    public int getMaxSandBots() {
-        if(!FactionsPlugin.getInstance().conf().upgrades().sandbots().isEnabled()) return FactionsPlugin.getInstance().conf().upgrades().tnt().getNumber(this.getUpgrade(UpgradeType.SANDBOTS));
-        return 100;
-    }
-
     public Set<String> getOwnerList(FLocation loc) {
         return claimOwnership.get(loc);
     }
@@ -1518,31 +1492,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
 
                 this.upgrades.put(type, currentLevel + 1);
                 return true;
-            case SANDBOTS:
-                maxLevel = FactionsPlugin.getInstance().conf().upgrades().sandbots().getLevels().size();
-
-                currentLevel = getUpgrade(type);
-
-                if(currentLevel + 1 > maxLevel){
-                    user.msg(TL.COMMAND_UPGRADE_ALREADY_MAX);
-                    return false;
-                }
-
-                money = (long) Econ.getBalance(user);
-
-                cost = FactionsPlugin.getInstance().conf().upgrades().sandbots().getCost(currentLevel + 1);
-
-                if(cost > money){
-                    user.msg(TL.COMMAND_UPGRADE_NOT_ENOUGH);
-                    return false;
-                }
-
-                Econ.withdraw(user, cost);
-
-                user.msg(TL.COMMAND_UPGRADE_SUCCESSFUL, "Sandbots", currentLevel + 1);
-
-                this.upgrades.put(type, currentLevel + 1);
-                return true;
             case DAMAGE_INCREASE:
                 maxLevel = FactionsPlugin.getInstance().conf().upgrades().damageIncrease().getLevels().size();
 
@@ -1667,3 +1616,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         return Board.getInstance().getAllClaims(this);
     }
 }
+
+
+

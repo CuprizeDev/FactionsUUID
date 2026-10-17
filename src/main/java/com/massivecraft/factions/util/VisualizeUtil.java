@@ -61,8 +61,8 @@ public class VisualizeUtil {
 
     @SuppressWarnings("deprecation")
     public static void clear(Player player) {
-        Set<Location> locations = getPlayerLocations(player);
-        if (locations == null) {
+        Set<Location> locations = playerLocations.get(player.getUniqueId());
+        if (locations == null || locations.isEmpty()) {
             return;
         }
         for (Location location : locations) {

@@ -28,7 +28,6 @@ public class UpgradeGUI extends GUI<UpgradeType> {
 
         items.put(UpgradeType.EXP, FactionsPlugin.getInstance().conf().upgrades().exp().item().getItem());
 
-        items.put(UpgradeType.SANDBOTS, FactionsPlugin.getInstance().conf().upgrades().sandbots().item().getItem());
 
         items.put(UpgradeType.DAMAGE_INCREASE, FactionsPlugin.getInstance().conf().upgrades().damageIncrease().item().getItem());
 
@@ -100,15 +99,7 @@ public class UpgradeGUI extends GUI<UpgradeType> {
 
                 toReturn = toReturn.replace("{LEVEL}", user.getFaction().getUpgrade(upgradeType) + "");
                 break;
-            case SANDBOTS:
-                for(int z = 1; z <= FactionsPlugin.getInstance().conf().upgrades().sandbots().getLevels().size(); z++){
-                    toReturn = toReturn.replace("{AMOUNT_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().sandbots().getNumber(z));
 
-                    toReturn = toReturn.replace("{PRICE_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().sandbots().getCost(z));
-                }
-
-                toReturn = toReturn.replace("{LEVEL}", user.getFaction().getUpgrade(upgradeType) + "");
-                break;
             case DAMAGE_INCREASE:
                 for(int z = 1; z <= FactionsPlugin.getInstance().conf().upgrades().damageIncrease().getLevels().size(); z++){
                     toReturn = toReturn.replace("{AMOUNT_" + z + "}", "" + FactionsPlugin.getInstance().conf().upgrades().damageIncrease().getNumber(z));
@@ -175,10 +166,7 @@ public class UpgradeGUI extends GUI<UpgradeType> {
         if(FactionsPlugin.getInstance().conf().upgrades().cropBoost().isEnabled())
             map.put(FactionsPlugin.getInstance().conf().upgrades().cropBoost().item().getSlot(), UpgradeType.CROP_BOOST);
         if(FactionsPlugin.getInstance().conf().upgrades().exp().isEnabled())
-            map.put(FactionsPlugin.getInstance().conf().upgrades().exp().item().getSlot(), UpgradeType.EXP);
-        if(FactionsPlugin.getInstance().conf().upgrades().sandbots().isEnabled())
-            map.put(FactionsPlugin.getInstance().conf().upgrades().sandbots().item().getSlot(), UpgradeType.SANDBOTS);
-        if(FactionsPlugin.getInstance().conf().upgrades().damageIncrease().isEnabled())
+            map.put(FactionsPlugin.getInstance().conf().upgrades().exp().item().getSlot(), UpgradeType.EXP);        if(FactionsPlugin.getInstance().conf().upgrades().damageIncrease().isEnabled())
             map.put(FactionsPlugin.getInstance().conf().upgrades().damageIncrease().item().getSlot(), UpgradeType.DAMAGE_INCREASE);
         if(FactionsPlugin.getInstance().conf().upgrades().damageIncrease().isEnabled())
             map.put(FactionsPlugin.getInstance().conf().upgrades().damageReduction().item().getSlot(), UpgradeType.DAMAGE_REDUCTION);
@@ -203,3 +191,4 @@ public class UpgradeGUI extends GUI<UpgradeType> {
         return map;
     }
 }
+

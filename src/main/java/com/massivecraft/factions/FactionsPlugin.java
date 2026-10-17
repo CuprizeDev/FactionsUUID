@@ -382,14 +382,15 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         }
         getLogger().info(txt.parse("Using %1s as a particle provider", particleProvider.name()));
 
-        if (conf().commands().seeChunk().isParticles()) {
-            double delay = Math.floor(conf().commands().seeChunk().getParticleUpdateTime() * 20);
-            try {
-                seeChunkUtil = new SeeChunkUtil();
-                seeChunkUtil.runTaskTimer(this, 0, (long) delay);
-            } catch (IllegalArgumentException exc) {
-                getLogger().warning(exc.getMessage());
-            }
+        try {
+            seeChunkUtil = new SeeChunkUtil();
+            double rawDelay = conf().commands().seeChunk().getParticleUpdateTime() * 20;
+            long delay = (long) Math.floor(rawDelay);
+            if (delay < 5) delay = 15;
+            if (conf().commands().seeChunk().isBarriers() && delay > 20) delay = 20;
+            seeChunkUtil.runTaskTimer(this, 0, delay);
+        } catch (IllegalArgumentException exc) {
+            getLogger().warning(exc.getMessage());
         }
         // End run before registering event handlers.
 
@@ -399,6 +400,7 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         getServer().getPluginManager().registerEvents(new FactionsEntityListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsExploitListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsBlockListener(this), this);
+        getServer().getPluginManager().registerEvents(new FactionsPatchCrumbsListener(), this);
 
         if (getServer().getPluginManager().isPluginEnabled("VitalCore")) {
             getServer().getPluginManager().registerEvents(new VitalCoreListener(this), this);
@@ -409,12 +411,20 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         if (getServer().getPluginManager().isPluginEnabled("FactionsKore")) {
             getServer().getPluginManager().registerEvents(new FKoreListener(this), this);
 
-            if (FactionsKore.get().getFeature(ConquestFeature.class).isOn()) {
-                getServer().getPluginManager().registerEvents(new FKoreConquestListener(), this);
+            try {
+                if (FactionsKore.get().getFeature(ConquestFeature.class) != null && FactionsKore.get().getFeature(ConquestFeature.class).isOn()) {
+                    getServer().getPluginManager().registerEvents(new FKoreConquestListener(), this);
+                }
+            } catch (Throwable t) {
+                getLogger().warning("Could not hook into FactionsKore ConquestFeature: " + t.getMessage());
             }
 
-            if (FactionsKore.get().getFeature(LMSFeature.class).isOn()) {
-                getServer().getPluginManager().registerEvents(new FKoreLMSListener(), this);
+            try {
+                if (FactionsKore.get().getFeature(LMSFeature.class) != null && FactionsKore.get().getFeature(LMSFeature.class).isOn()) {
+                    getServer().getPluginManager().registerEvents(new FKoreLMSListener(), this);
+                }
+            } catch (Throwable t) {
+                getLogger().warning("Could not hook into FactionsKore LMSFeature: " + t.getMessage());
             }
         }
         if (mcVersion >= 800) {
@@ -928,6 +938,10 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
             FPlayers.getInstance().forceSave();
             Board.getInstance().forceSave();
         }
+        if (seeChunkUtil != null) {
+            seeChunkUtil.cleanup();
+        }
+        FactionsPatchCrumbsListener.cleanupAll();
         if (this.luckPermsSetup) {
             LuckPerms.shutdown(this);
         }

@@ -57,7 +57,10 @@ public class SimpleItem {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES);
             }
             if (enchant) {
-                meta.addEnchant(Enchantment.LUCK, 1, true);
+                Enchantment glowEnchant = Enchantment.getByName("LUCK");
+                if (glowEnchant == null) glowEnchant = Enchantment.getByName("LUCK_OF_THE_SEA");
+                if (glowEnchant == null) glowEnchant = Enchantment.UNBREAKING;
+                meta.addEnchant(glowEnchant, 1, true);
             }
 
             // If a user places a color, they should be expected to put a colorable object

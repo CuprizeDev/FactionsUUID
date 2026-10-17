@@ -297,7 +297,18 @@ public class MainConfig {
             private int dtcPoints = 25;
             private int kothPoints = 60;
             private int conquestPoints = 60;
+            private int citadelPoints = 60;
+            private int envoyPoints = 25;
+            private int meteorsPoints = 25;
+            private int mobPoints = 25;
+            private int outpostPoints = 25;
+            private int poiPoints = 25;
+            private int spleefPoints = 25;
             private int pointPerKill = 1;
+
+            public int getCitadelPoints() {
+                return citadelPoints;
+            }
 
             public int getConquestPoints() {
                 return conquestPoints;
@@ -305,6 +316,10 @@ public class MainConfig {
 
             public int getDtcPoints() {
                 return dtcPoints;
+            }
+
+            public int getEnvoyPoints() {
+                return envoyPoints;
             }
 
             public int getKothPoints() {
@@ -317,6 +332,26 @@ public class MainConfig {
 
             public int getLtsPoints() {
                 return ltsPoints;
+            }
+
+            public int getMeteorsPoints() {
+                return meteorsPoints;
+            }
+
+            public int getMobPoints() {
+                return mobPoints;
+            }
+
+            public int getOutpostPoints() {
+                return outpostPoints;
+            }
+
+            public int getPoiPoints() {
+                return poiPoints;
+            }
+
+            public int getSpleefPoints() {
+                return spleefPoints;
             }
 
             public int getPointPerKill() {
@@ -458,7 +493,9 @@ public class MainConfig {
         }
 
         public class SeeChunk {
-            private boolean particles = true;
+            @Comment("Visualization mode for /f seechunk: 'BARRIER' (default, client-side barrier blocks) or 'PARTICLES'")
+            private String mode = "BARRIER";
+            private boolean particles = false;
             @Comment("Get a list of particle names here: https://factions.support/particles/")
             private String particleName = "REDSTONE";
             @Comment("If the chosen particle is compatible with coloring we will color\n" +
@@ -467,8 +504,16 @@ public class MainConfig {
             @Comment("How often should we update the particles to the current player's location?")
             private double particleUpdateTime = 0.75;
 
+            public String getMode() {
+                return mode;
+            }
+
             public boolean isParticles() {
-                return particles;
+                return "PARTICLES".equalsIgnoreCase(this.mode) || (particles && !"BARRIER".equalsIgnoreCase(this.mode));
+            }
+
+            public boolean isBarriers() {
+                return !isParticles();
             }
 
             public String getParticleName() {
@@ -3288,118 +3333,6 @@ public class MainConfig {
             }
         }
 
-        public class Sandbots {
-            private boolean enabled = true;
-
-            private int defaultAmount = 1;
-
-            @Comment("This list follows the format of (PRICE):(Higher Sand Bot Limit). The order of the list is crucial as it dictates the level.")
-            private List<String> levels = new ArrayList<String>(){
-                {
-                    this.add("250000:2");
-                    this.add("500000:3");
-                    this.add("1500000:4");
-                    this.add("2000000:5");
-                    this.add("2500000:6");
-                    this.add("2500000:7");
-                }
-            };
-
-            public int getCost(int level){
-                if(level <= 0 || levels.size() == 0 || levels.size() < level)return -1;
-
-                String[] costs = levels.get(level - 1).split(":");
-
-                return Integer.parseInt(costs[0]);
-            }
-
-            public int getNumber(int level) {
-                if (level <= 0) return getDefaultAmount();
-
-                if (levels.isEmpty() || levels.size() < level) return -1;
-
-                String[] costs = levels.get(level - 1).split(":");
-
-                try {
-                    return Integer.parseInt(costs[1]);
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid number format for level " + level + ": " + costs[1]);
-                    return -1;
-                }
-            }
-
-            public List<String> getLevels() {
-                return levels;
-            }
-
-            private Item item = new Item();
-
-            public boolean isEnabled(){
-                return this.enabled;
-            }
-
-            public int getDefaultAmount() {
-                return defaultAmount;
-            }
-
-            public Item item(){
-                return item;
-            }
-
-            public class Item {
-                private String type = "SAND";
-
-                private String name = "&e&lSandbot Limit";
-
-                private int slot = 1;
-
-                private int damage = 0;
-
-                public int getSlot() {
-                    return slot;
-                }
-
-                private List<String> lore = new ArrayList<String>() {
-                    {
-                        this.add("&7");
-                        this.add("&d* &eLevel 1");
-                        this.add("&ePrice: &a${PRICE_1}");
-                        this.add("&eAmount: &c{AMOUNT_1}");
-                        this.add("&7");
-                        this.add("&d* &eLevel 2");
-                        this.add("&ePrice: &a${PRICE_2}");
-                        this.add("&eAmount: &c{AMOUNT_2}");
-                        this.add("&7");
-                        this.add("&d* &eLevel 3");
-                        this.add("&ePrice: &a${PRICE_3}");
-                        this.add("&eAmount: &c{AMOUNT_3}");
-                        this.add("&7");
-                        this.add("&d* &eLevel 4");
-                        this.add("&ePrice: &a${PRICE_4}");
-                        this.add("&eAmount: &c{AMOUNT_4}");
-                        this.add("&7");
-                        this.add("&d* &eLevel 5");
-                        this.add("&ePrice: &a${PRICE_5}");
-                        this.add("&eAmount: &c{AMOUNT_5}");
-                        this.add("&7");
-                        this.add("&d* &eLevel 6");
-                        this.add("&ePrice: &a${PRICE_6}");
-                        this.add("&eAmount: &c{AMOUNT_6}");
-                        this.add("&7");
-                        this.add("&7Current Level: &d&n{LEVEL}");
-                    }
-                };
-
-                public SimpleItem getItem(){
-                    return SimpleItem.builder().setMaterial(Material.valueOf(type))
-                            .setData((short) damage)
-                            .setLore(lore)
-                            .setName(TextUtil.parseColor(name))
-                            .build();
-                }
-            }
-        }
-
         public class DamageIncrease {
             private boolean enabled = true;
 
@@ -3802,13 +3735,6 @@ public class MainConfig {
         public Exp exp() {
             return this.exp;
         }
-
-        private Sandbots sandbots = new Sandbots();
-
-        public Sandbots sandbots() {
-            return this.sandbots;
-        }
-
         private DamageIncrease damageIncrease = new DamageIncrease();
 
         public DamageIncrease damageIncrease() {
@@ -3884,7 +3810,10 @@ public class MainConfig {
 
                     ItemMeta itemMeta = itemStack.getItemMeta();
 
-                    itemMeta.addEnchant(Enchantment.LUCK, 1, true);
+                    Enchantment glowEnchant = Enchantment.getByName("LUCK");
+                    if (glowEnchant == null) glowEnchant = Enchantment.getByName("LUCK_OF_THE_SEA");
+                    if (glowEnchant == null) glowEnchant = Enchantment.UNBREAKING;
+                    itemMeta.addEnchant(glowEnchant, 1, true);
                     itemMeta.getItemFlags().add(ItemFlag.HIDE_ENCHANTS);
 
                     itemMeta.setDisplayName(TextUtil.parseColor(name));
@@ -4131,3 +4060,4 @@ public class MainConfig {
         return data;
     }
 }
+

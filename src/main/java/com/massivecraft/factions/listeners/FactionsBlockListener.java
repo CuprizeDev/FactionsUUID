@@ -84,20 +84,9 @@ public class FactionsBlockListener implements Listener {
 
     }
 
-    @EventHandler
-    public void onSandBotExplosion(EntityExplodeEvent event) {
-        FLocation fLocation = new FLocation(event.getLocation());
-        Faction faction = Board.getInstance().getFactionAt(fLocation);
-        Set<Location> sandBotLocations = faction.getSandBotLocations().stream()
-                .map(Location::deserialize)
-                .collect(Collectors.toSet());
 
-        event.blockList().forEach(block -> sandBotLocations.remove(block.getLocation()));
 
-        faction.setSandBotLocations(sandBotLocations.stream()
-                .map(Location::serialize)
-                .collect(Collectors.toList()));
-    }
+
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
@@ -465,9 +454,17 @@ public class FactionsBlockListener implements Listener {
 
                         player.setVelocity(new Vector(0, 0.75, 0));
                         int duration = 10;
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, duration, 1000, false, false));
+                        PotionEffectType slowDigging = PotionEffectType.getByName("SLOW_DIGGING");
+                        if (slowDigging == null) slowDigging = PotionEffectType.getByName("MINING_FATIGUE");
+                        if (slowDigging != null) {
+                            player.addPotionEffect(new PotionEffect(slowDigging, duration, 1000, false, false));
+                        }
                         player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, duration, 5, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, duration, 1000, false, false));
+                        PotionEffectType slowness = PotionEffectType.getByName("SLOW");
+                        if (slowness == null) slowness = PotionEffectType.getByName("SLOWNESS");
+                        if (slowness != null) {
+                            player.addPotionEffect(new PotionEffect(slowness, duration, 1000, false, false));
+                        }
                     }
                 }
             }
@@ -495,3 +492,5 @@ public class FactionsBlockListener implements Listener {
         return true;
     }
 }
+
+
