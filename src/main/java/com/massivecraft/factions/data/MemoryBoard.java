@@ -11,6 +11,7 @@ import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.util.AsciiCompass;
+import com.massivecraft.factions.util.ClaimExpiryUtil;
 import com.massivecraft.factions.util.TL;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
@@ -374,7 +375,7 @@ public abstract class MemoryBoard extends Board {
                             if (outOfRange)
                                 row.tooltip(TL.COMMAND_CLAIMAT_TOOFAR_TOOLTIP.toString());
                             else
-                                row.tooltip(String.format(TL.CLAIM_CLICK_TO_CLAIM.toString(), flocationHere.getX(), flocationHere.getZ()))
+                                row.tooltip(tip(String.format(TL.MAP_HOVER_WILDERNESS.toString(), flocationHere.getX(), flocationHere.getZ()), null, flocationHere))
                                         .command("/f claimat " + flocationHere.getWorld().getName() + " " + flocationHere.getX() + " " + flocationHere.getZ() +
                                                 " true");
                         }
@@ -396,23 +397,15 @@ public abstract class MemoryBoard extends Board {
                                 if (outOfRange)
                                     row.tooltip(TL.COMMAND_UNCLAIMAT_TOOFAR_TOOLTIP.toString());
                                 else
-                                    row.tooltip(String.format(TL.CLAIM_CLICK_TO_UNCLAIM.toString(), flocationHere.getX(), flocationHere.getZ()))
+                                    row.tooltip(tip(String.format(TL.MAP_HOVER_OWN.toString(), flocationHere.getX(), flocationHere.getZ()), factionHere, flocationHere))
                                             .command(
                                                     "/f unclaimat " + flocationHere.getWorld().getName() + " " + flocationHere.getX() + " " +
                                                             flocationHere.getZ() +
                                                             " true");
                             }
                         } else {
-                            if (fplayer.isAdminBypassing()) {
-                                row.tooltip(String.format(TL.CLAIMEDTOOLTIP_FACTIONNAME.toString(), relation.getColor().toString() + factionHere.getTag()), " ",
-                                                "\u00A74\u00A7oADMIN BYPASS", "Click to \u00A7cunclaim\u00A7f.")
-                                        .command(
-                                                "/f unclaimat " + flocationHere.getWorld().getName() + " " + flocationHere.getX() + " " + flocationHere.getZ() +
-                                                        " true");
-                            } else {
-                                row.tooltip(String.format(TL.CLAIMEDTOOLTIP_FACTIONNAME.toString(), relation.getColor().toString() + factionHere.getTag()))
-                                        .command("/f who " + factionHere.getTag());
-                            }
+                            row.tooltip(tip(String.format(TL.MAP_HOVER_OTHER.toString(), relation.getColor().toString(), factionHere.getTag(), flocationHere.getX(), flocationHere.getZ()), factionHere, flocationHere))
+                                    .command("/f who " + factionHere.getTag());
                         }
                     } else {
                         row.then("-").color(ChatColor.GRAY);
@@ -433,6 +426,15 @@ public abstract class MemoryBoard extends Board {
         }
 
         return ret;
+    }
+
+    private static String[] tip(String header, Faction faction, FLocation loc) {
+        ClaimExpiryUtil expiry = FactionsPlugin.getInstance().getClaimExpiry();
+        String[] lines = faction == null || expiry == null ? null : expiry.mapLines(faction, loc);
+        if (lines == null) {
+            return new String[]{header};
+        }
+        return new String[]{header, lines[0], lines[1]};
     }
 
     public abstract void convertFrom(MemoryBoard old);

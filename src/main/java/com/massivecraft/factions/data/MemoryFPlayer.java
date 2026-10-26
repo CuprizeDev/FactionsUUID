@@ -1358,7 +1358,7 @@ public abstract class MemoryFPlayer implements FPlayer {
         }
 
         for (FancyMessage msg : messages) {
-            msg.send(player);
+            FancySender.send(msg, player);
         }
     }
 

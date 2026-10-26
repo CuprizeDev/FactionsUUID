@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -3963,6 +3964,409 @@ public class MainConfig {
     @Comment("WorldGuard settings")
     private WorldGuard worldGuard = new WorldGuard();
     private WorldBorder worldBorder = new WorldBorder();
+
+    private ChunkLoaders chunkLoaders = new ChunkLoaders();
+    private Rally rally = new Rally();
+    private ClaimExpiry claimExpiry = new ClaimExpiry();
+    private SpawnClaimLimit spawnClaimLimit = new SpawnClaimLimit();
+
+    public class ChunkLoaderItem {
+        private String type;
+        private String name;
+        private boolean glow = true;
+        private int customModelData = 0;
+        private List<String> lore;
+
+        private ChunkLoaderItem(String type, String name, List<String> lore) {
+            this.type = type;
+            this.name = name;
+            this.lore = lore;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isGlow() {
+            return glow;
+        }
+
+        public int getCustomModelData() {
+            return customModelData;
+        }
+
+        public List<String> getLore() {
+            return lore;
+        }
+    }
+
+    public class ChunkLoaderGuiSlot {
+        private String material;
+        private String name;
+        private List<String> lore;
+
+        private ChunkLoaderGuiSlot(String material, String name, List<String> lore) {
+            this.material = material;
+            this.name = name;
+            this.lore = lore;
+        }
+
+        public String getMaterial() {
+            return material;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<String> getLore() {
+            return lore;
+        }
+    }
+
+    public class ChunkLoaders {
+        public class Upkeep {
+            private int minutesPerItem = 30;
+            private int maxHours = 48;
+
+            public int getMinutesPerItem() {
+                return minutesPerItem;
+            }
+
+            public int getMaxHours() {
+                return maxHours;
+            }
+        }
+
+        public class WhileUnattended {
+            private int spawnerPlayerRange = 32767;
+            private boolean keepSpawnerMobs = true;
+            private int scanSeconds = 10;
+
+            public int getSpawnerPlayerRange() {
+                return spawnerPlayerRange;
+            }
+
+            public boolean isKeepSpawnerMobs() {
+                return keepSpawnerMobs;
+            }
+
+            public int getScanSeconds() {
+                return scanSeconds;
+            }
+        }
+
+        public class Drop {
+            private String entity = "ENDERMITE";
+            private double chance = 0.02;
+            private int min = 1;
+            private int max = 1;
+            private boolean onlyPlayerKills = true;
+
+            public String getEntity() {
+                return entity;
+            }
+
+            public double getChance() {
+                return chance;
+            }
+
+            public int getMin() {
+                return min;
+            }
+
+            public int getMax() {
+                return max;
+            }
+
+            public boolean isOnlyPlayerKills() {
+                return onlyPlayerKills;
+            }
+        }
+
+        public class Items {
+            private ChunkLoaderItem loader = new ChunkLoaderItem("END_CRYSTAL", "&d&lChunk Loader", Lists.newArrayList(
+                    "&7Place it anywhere to keep a &f{size}x{size} &7area loaded.",
+                    "&7Everything keeps running, players or not.",
+                    "&7Right click it to add Chunkloader Shards.",
+                    "&7Stored time: &f{time}"));
+            private ChunkLoaderItem shards = new ChunkLoaderItem("AMETHYST_SHARD",
+                    "<!italic><#FF00FF><bold>*</bold><#7F00FF><bold>*</bold><#FF00FF><bold>*</bold> <#7F00FF><bold>Chunkloader Shard</bold> <#FF00FF><bold>*</bold><#7F00FF><bold>*</bold><#FF00FF><bold>*</bold>",
+                    Lists.newArrayList(
+                            "<!italic><gray>Feed it to a chunkloader to</gray>",
+                            "<!italic><gray>keep your spawners running</gray>",
+                            "",
+                            "<!italic><gray>Length</gray> <dark_gray>\u00BB</dark_gray> <white>{length}</white>"));
+
+            public ChunkLoaderItem getLoader() {
+                return loader;
+            }
+
+            public ChunkLoaderItem getShards() {
+                return shards;
+            }
+        }
+
+        public class Gui {
+            private String title = "&8Chunk Loader";
+            private String filler = "GRAY_STAINED_GLASS_PANE";
+            private ChunkLoaderGuiSlot shards = new ChunkLoaderGuiSlot("HOPPER", "&aAdd Chunkloader Shards", Lists.newArrayList(
+                    "&7Click with shards on your cursor, or",
+                    "&7click to add &f1 &7from your inventory.",
+                    "&7Shift click to add &fall &7of it.",
+                    "&8Each adds {minutes} minutes (max {max})."));
+            private ChunkLoaderGuiSlot info = new ChunkLoaderGuiSlot("BOOK", "&d&lChunk Loader", Lists.newArrayList(
+                    "&7Keeps a &f{size}x{size} &7chunk area loaded.",
+                    "&7Everything keeps running, players or not.",
+                    "&7It stops when it runs out of shards.",
+                    "",
+                    "&7Location: &f{x}, {y}, {z}",
+                    "&7Status: {status}"));
+            private ChunkLoaderGuiSlot time = new ChunkLoaderGuiSlot("CLOCK", "&eTime left: &f{time}", Lists.newArrayList(
+                    "&7Status: {status}"));
+            private ChunkLoaderGuiSlot timeEmpty = new ChunkLoaderGuiSlot("BARRIER", "&cOut of shards", Lists.newArrayList(
+                    "&7Add Chunkloader Shards to turn it back on."));
+
+            public String getTitle() {
+                return title;
+            }
+
+            public String getFiller() {
+                return filler;
+            }
+
+            public ChunkLoaderGuiSlot getShards() {
+                return shards;
+            }
+
+            public ChunkLoaderGuiSlot getInfo() {
+                return info;
+            }
+
+            public ChunkLoaderGuiSlot getTime() {
+                return time;
+            }
+
+            public ChunkLoaderGuiSlot getTimeEmpty() {
+                return timeEmpty;
+            }
+        }
+
+        private boolean enabled = true;
+        private int radius = 2;
+        private int maxPerFaction = 3;
+        private List<String> allowedWorlds = new ArrayList<>();
+        private boolean requireFaction = true;
+        private boolean requireBuildPermission = true;
+        private boolean pickupWithSneak = true;
+        private boolean enemiesCanBreak = true;
+        private boolean dropOnBreak = true;
+        private boolean showTimer = true;
+        private Upkeep upkeep = new Upkeep();
+        private WhileUnattended whileUnattended = new WhileUnattended();
+        private Drop drop = new Drop();
+        private Items items = new Items();
+        private Gui gui = new Gui();
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public int getRadius() {
+            return radius;
+        }
+
+        public int getMaxPerFaction() {
+            return maxPerFaction;
+        }
+
+        public List<String> getAllowedWorlds() {
+            return allowedWorlds;
+        }
+
+        public boolean isRequireFaction() {
+            return requireFaction;
+        }
+
+        public boolean isRequireBuildPermission() {
+            return requireBuildPermission;
+        }
+
+        public boolean isPickupWithSneak() {
+            return pickupWithSneak;
+        }
+
+        public boolean isEnemiesCanBreak() {
+            return enemiesCanBreak;
+        }
+
+        public boolean isDropOnBreak() {
+            return dropOnBreak;
+        }
+
+        public boolean isShowTimer() {
+            return showTimer;
+        }
+
+        public Upkeep getUpkeep() {
+            return upkeep;
+        }
+
+        public WhileUnattended getWhileUnattended() {
+            return whileUnattended;
+        }
+
+        public Drop getDrop() {
+            return drop;
+        }
+
+        public Items getItems() {
+            return items;
+        }
+
+        public Gui getGui() {
+            return gui;
+        }
+    }
+
+    public class Rally {
+        public class Beam {
+            private boolean enabled = true;
+            private String particle = "END_ROD";
+            private int height = 60;
+            private double spacing = 2.0;
+            private int intervalTicks = 20;
+            private double maxDistance = 200.0;
+
+            public boolean isEnabled() {
+                return enabled;
+            }
+
+            public String getParticle() {
+                return particle;
+            }
+
+            public int getHeight() {
+                return height;
+            }
+
+            public double getSpacing() {
+                return spacing;
+            }
+
+            public int getIntervalTicks() {
+                return intervalTicks;
+            }
+
+            public double getMaxDistance() {
+                return maxDistance;
+            }
+        }
+
+        private boolean enabled = true;
+        private int durationSeconds = 60;
+        private int cooldownSeconds = 15;
+        private boolean followPlayer = true;
+        private int updateTicks = 5;
+        private Beam beam = new Beam();
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public int getDurationSeconds() {
+            return durationSeconds;
+        }
+
+        public int getCooldownSeconds() {
+            return cooldownSeconds;
+        }
+
+        public boolean isFollowPlayer() {
+            return followPlayer;
+        }
+
+        public int getUpdateTicks() {
+            return updateTicks;
+        }
+
+        public Beam getBeam() {
+            return beam;
+        }
+    }
+
+    public class ClaimExpiry {
+        private boolean enabled = true;
+        private String expireAfter = "3h";
+        private int scanSeconds = 20;
+        private int maxPerScan = 50;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public String getExpireAfter() {
+            return expireAfter;
+        }
+
+        public int getScanSeconds() {
+            return scanSeconds;
+        }
+
+        public int getMaxPerScan() {
+            return maxPerScan;
+        }
+    }
+
+    public class SpawnClaimLimit {
+        private boolean enabled = true;
+        private int maxClaims = 20;
+        private Map<String, Integer> radiusByWorld = new LinkedHashMap<>();
+
+        private SpawnClaimLimit() {
+            radiusByWorld.put("world", 25);
+            radiusByWorld.put("world_nether", 15);
+            radiusByWorld.put("world_blizzard", 15);
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public int getMaxClaims() {
+            return maxClaims;
+        }
+
+        public Integer getRadius(String world) {
+            Object value = radiusByWorld.get(world);
+            return value instanceof Number ? ((Number) value).intValue() : null;
+        }
+
+        public boolean contains(String world, long x, long z) {
+            Integer radius = enabled ? getRadius(world) : null;
+            return radius != null && Math.abs(x) <= radius && Math.abs(z) <= radius;
+        }
+    }
+
+    public SpawnClaimLimit spawnClaimLimit() {
+        return spawnClaimLimit;
+    }
+
+    public ChunkLoaders chunkLoaders() {
+        return chunkLoaders;
+    }
+
+    public Rally rally() {
+        return rally;
+    }
+
+    public ClaimExpiry claimExpiry() {
+        return claimExpiry;
+    }
 
     private OnlineChecks onlineChecks = new OnlineChecks();
 

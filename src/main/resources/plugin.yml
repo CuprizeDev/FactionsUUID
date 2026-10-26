@@ -121,6 +121,8 @@ permissions:
       factions.scoreboard: true
       factions.showinvites: true
       factions.seechunk: true
+      factions.rally: true
+      factions.chunkloader: true
       factions.monitorlogins: true
       factions.warp: true
       factions.top: true
@@ -296,6 +298,14 @@ permissions:
     description: show pending invites to your faction
   factions.seechunk:
     description: see the chunk you stand in
+  factions.rally:
+    description: start and see faction rallies
+  factions.rally.admin:
+    description: end any faction rally
+  factions.chunkloader:
+    description: use chunk loaders
+  factions.chunkloader.admin:
+    description: give chunk loader items and open any menu
   factions.setwarp:
     description: set a warp for your faction
   factions.warp:

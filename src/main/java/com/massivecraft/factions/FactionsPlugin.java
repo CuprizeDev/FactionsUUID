@@ -34,6 +34,7 @@ import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.util.AutoLeaveTask;
 import com.massivecraft.factions.util.EnumTypeAdapter;
 import com.massivecraft.factions.util.FlightUtil;
+import com.massivecraft.factions.util.ClaimExpiryUtil;
 import com.massivecraft.factions.util.LazyLocation;
 import com.massivecraft.factions.util.MapFLocToStringSetTypeAdapter;
 import com.massivecraft.factions.util.Metrics;
@@ -170,6 +171,9 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
     private final Set<String> pluginsHandlingChat = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private SeeChunkUtil seeChunkUtil;
+    private FactionsChunkLoaderListener chunkLoaders;
+    private FactionsRallyListener rally;
+    private ClaimExpiryUtil claimExpiry;
     private ParticleProvider particleProvider;
     private IWorldguard worldguard;
     private LandRaidControl landRaidControl;
@@ -401,6 +405,9 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         getServer().getPluginManager().registerEvents(new FactionsExploitListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsBlockListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsPatchCrumbsListener(), this);
+        getServer().getPluginManager().registerEvents(new FactionsSpawnClaimListener(), this);
+
+        loadFeatures();
 
         if (getServer().getPluginManager().isPluginEnabled("VitalCore")) {
             getServer().getPluginManager().registerEvents(new VitalCoreListener(this), this);
@@ -942,12 +949,85 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
             seeChunkUtil.cleanup();
         }
         FactionsPatchCrumbsListener.cleanupAll();
+        unloadFeatures();
         if (this.luckPermsSetup) {
             LuckPerms.shutdown(this);
         }
         ContextManager.shutdown();
         log("Disabled");
     }
+
+    public FactionsChunkLoaderListener getChunkLoaders() {
+        return chunkLoaders;
+    }
+
+    public FactionsRallyListener getRally() {
+        return rally;
+    }
+
+    public ClaimExpiryUtil getClaimExpiry() {
+        return claimExpiry;
+    }
+
+    public void loadFeatures() {
+        if (conf().rally().isEnabled()) {
+            if (rally == null) {
+                rally = new FactionsRallyListener(this);
+                getServer().getPluginManager().registerEvents(rally, this);
+            }
+            rally.reload();
+        } else if (rally != null) {
+            HandlerList.unregisterAll(rally);
+            rally.clear();
+            rally = null;
+        }
+        if (conf().chunkLoaders().isEnabled()) {
+            boolean fresh = chunkLoaders == null;
+            if (fresh) {
+                chunkLoaders = new FactionsChunkLoaderListener(this);
+                getServer().getPluginManager().registerEvents(chunkLoaders, this);
+            }
+            chunkLoaders.reload();
+            if (fresh) {
+                chunkLoaders.start();
+            }
+        } else if (chunkLoaders != null) {
+            HandlerList.unregisterAll(chunkLoaders);
+            chunkLoaders.stop();
+            chunkLoaders = null;
+        }
+        if (conf().claimExpiry().isEnabled()) {
+            boolean fresh = claimExpiry == null;
+            if (fresh) {
+                claimExpiry = new ClaimExpiryUtil(this);
+            }
+            claimExpiry.reload();
+            if (fresh) {
+                claimExpiry.start();
+            }
+        } else if (claimExpiry != null) {
+            claimExpiry.stop();
+            claimExpiry = null;
+        }
+    }
+
+    public void unloadFeatures() {
+        if (rally != null) {
+            HandlerList.unregisterAll(rally);
+            rally.clear();
+            rally = null;
+        }
+        if (chunkLoaders != null) {
+            HandlerList.unregisterAll(chunkLoaders);
+            chunkLoaders.stop();
+            chunkLoaders = null;
+        }
+        if (claimExpiry != null) {
+            claimExpiry.stop();
+            claimExpiry = null;
+        }
+    }
+
 
     public void startAutoLeaveTask(boolean restartIfRunning) {
         if (autoLeaveTask != null) {

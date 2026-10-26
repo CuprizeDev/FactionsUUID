@@ -8,6 +8,7 @@ import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.Role;
+import com.massivecraft.factions.util.FancySender;
 import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.WarmUpUtil;
 import mkremins.fanciful.FancyMessage;
@@ -75,7 +76,7 @@ public class CommandContext {
 
     public void sendFancyMessage(List<FancyMessage> messages) {
         for (FancyMessage m : messages) {
-            sendFancyMessage(m);
+            FancySender.send(m, sender);
         }
     }
 
