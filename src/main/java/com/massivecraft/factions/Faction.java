@@ -53,6 +53,22 @@ public interface Faction extends EconomyParticipator {
 
     String getPayPal();
 
+    void setDiscord(String discord);
+
+    String getDiscord();
+
+    boolean isRecruiting();
+
+    void setRecruiting(boolean recruiting);
+
+    String getRecruitmentPlaystyle();
+
+    void setRecruitmentPlaystyle(String playstyle);
+
+    String getRecruitmentLookingFor();
+
+    void setRecruitmentLookingFor(String lookingFor);
+
     String getAltJoinString();
 
     String setAltOpen();

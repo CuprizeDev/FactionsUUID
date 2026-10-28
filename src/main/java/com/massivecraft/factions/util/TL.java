@@ -624,6 +624,25 @@ public enum TL {
     COMMAND_SEEPAYPAL_ISNTSET("%1$s&e's paypal link has not been set."),
     COMMAND_SEEPAYPAL_SEE("%1$s's paypal link is &a%2$s"),
 
+    COMMAND_DISCORD_DESCRIPTION("View a faction's Discord link"),
+    COMMAND_DISCORD_NOTSET_SELF("&cYour faction does not have a Discord link set! Use &e/f discord set <link>&c."),
+    COMMAND_DISCORD_NOTSET_OTHER("%1$s&e's Discord link has not been set."),
+    COMMAND_DISCORD_SEE("&8[&5&l!&8] &a%1$s&a's Discord: &b&n%2$s"),
+    COMMAND_DISCORD_CLICK_TOOLTIP("&eClick to join %1$s&e's Discord!"),
+
+    COMMAND_DISCORD_SET_DESCRIPTION("Set your faction's Discord invite link"),
+    COMMAND_DISCORD_SET_NOROLE("&cYou must be at least a faction co-leader to set the Discord link."),
+    COMMAND_DISCORD_SET_INVALID("&c%1$s is not a valid Discord invite link! Use a discord.gg or discord.com/invite link."),
+    COMMAND_DISCORD_SET_INAPPROPRIATE("&cThat Discord invite link contains inappropriate content and is not allowed."),
+    COMMAND_DISCORD_SET_SUCCESS("&8[&5&l!&8] &aSuccessfully set your faction's Discord link to: &b&n%1$s"),
+
+    COMMAND_RECRUITMENT_DESCRIPTION("Browse recruiting factions or manage your faction's recruitment listing"),
+    COMMAND_RECRUITMENT_NOROLE("&cYou do not have permission to manage faction recruitment."),
+    COMMAND_RECRUITMENT_NODISCORD("&cYou must set a faction Discord link first! (/f discord set <link>)"),
+    COMMAND_RECRUITMENT_STATUS_ENABLED("&8[&5&l!&8] &aFaction recruitment is now &lENABLED&a!"),
+    COMMAND_RECRUITMENT_STATUS_DISABLED("&8[&5&l!&8] &cFaction recruitment is now &lDISABLED&c!"),
+    COMMAND_RECRUITMENT_CLICK_DISCORD("&8[&5&l!&8] &a%1$s&a's Discord: &b&n%2$s"),
+
     COMMAND_TNT_TERRITORYONLY("&cCommand can only be run from your faction's territory!"),
     COMMAND_TNT_ADMINSET_USAGE("Set tnt as an admin"),
     COMMAND_TNT_ADMINADD_USAGE("Add tnt as an admin"),

@@ -7,6 +7,7 @@ import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.cmd.CommandContext;
 import com.massivecraft.factions.cmd.CommandRequirements;
 import com.massivecraft.factions.cmd.FCommand;
+import com.massivecraft.factions.integration.DiscordSRVIntegration;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.TextUtil;
@@ -54,6 +55,8 @@ public class CmdStrikeGive extends FCommand {
         }
 
         if(context.fPlayer != null)context.fPlayer.msg(TL.COMMAND_STRIKE_GIVE_SUCCESS, toStrike.describeTo(context.fPlayer), trim);
+
+        DiscordSRVIntegration.sendStrikeGivenEmbed(toStrike, trim, context.sender.getName());
     }
 
     @Override

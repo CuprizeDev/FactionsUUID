@@ -949,6 +949,7 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
             seeChunkUtil.cleanup();
         }
         FactionsPatchCrumbsListener.cleanupAll();
+        com.massivecraft.factions.integration.DiscordSRVIntegration.shutdown();
         unloadFeatures();
         if (this.luckPermsSetup) {
             LuckPerms.shutdown(this);

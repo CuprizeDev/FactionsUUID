@@ -51,6 +51,10 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected transient Set<FPlayer> fplayers = new HashSet<>();
     protected transient FPlayer fPlayerAdmin;
     protected String payPalLink;
+    protected String discordLink;
+    protected boolean recruiting = false;
+    protected String recruitmentPlaystyle = "CASUAL";
+    protected String recruitmentLookingFor = "ANY";
     protected Set<String> invites = new HashSet<>();
     protected HashMap<String, List<String>> announcements = new HashMap<>();
     protected ConcurrentHashMap<String, LazyLocation> warps = new ConcurrentHashMap<>();
@@ -1614,6 +1618,46 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
 
     public Set<FLocation> getAllClaims() {
         return Board.getInstance().getAllClaims(this);
+    }
+
+    @Override
+    public void setDiscord(String discord) {
+        this.discordLink = discord;
+    }
+
+    @Override
+    public String getDiscord() {
+        return this.discordLink;
+    }
+
+    @Override
+    public boolean isRecruiting() {
+        return this.recruiting;
+    }
+
+    @Override
+    public void setRecruiting(boolean recruiting) {
+        this.recruiting = recruiting;
+    }
+
+    @Override
+    public String getRecruitmentPlaystyle() {
+        return this.recruitmentPlaystyle == null ? "CASUAL" : this.recruitmentPlaystyle;
+    }
+
+    @Override
+    public void setRecruitmentPlaystyle(String playstyle) {
+        this.recruitmentPlaystyle = playstyle;
+    }
+
+    @Override
+    public String getRecruitmentLookingFor() {
+        return this.recruitmentLookingFor == null ? "ANY" : this.recruitmentLookingFor;
+    }
+
+    @Override
+    public void setRecruitmentLookingFor(String lookingFor) {
+        this.recruitmentLookingFor = lookingFor;
     }
 }
 

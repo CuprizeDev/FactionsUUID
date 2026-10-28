@@ -54,7 +54,8 @@ public class IntegrationManager implements Listener {
             } else {
                 f.log(Level.WARNING, "Found WorldGuard but couldn't support this version: " + version);
             }
-        });
+        }),
+        DISCORD_SRV("DiscordSRV", (p) -> DiscordSRVIntegration.init(FactionsPlugin.getInstance()));
 
         private static final Map<String, Consumer<Plugin>> STARTUP_MAP = new HashMap<>();
 

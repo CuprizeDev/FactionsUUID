@@ -495,9 +495,19 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/../../locallibs/FactionsKore-1.3.67.6.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.discordsrv</groupId>
+            <artifactId>discordsrv</artifactId>
+            <version>1.30.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <repositories>
+        <repository>
+            <id>scarsz</id>
+            <url>https://nexus.scarsz.me/content/groups/public/</url>
+        </repository>
         <repository>
             <id>fuuid-repo</id>
             <url>https://github.com/factions-site/repo/raw/public</url>

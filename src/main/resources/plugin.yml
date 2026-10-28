@@ -2,7 +2,7 @@ name: Factions
 version: ${project.version}-b${build.number}
 main: com.massivecraft.factions.FactionsPlugin
 authors: [Olof Larsson, Brett Flannigan, drtshock, CmdrKittens, Golfing8]
-softdepend: [LuckPerms, CoreProtect]
+softdepend: [LuckPerms, CoreProtect, DiscordSRV]
 api-version: 1.13
 website: https://www.spigotmc.org/resources/factionsuuid.1035/
 commands:
@@ -68,10 +68,13 @@ permissions:
       factions.kit.halfplayer: true
       factions.create: true
       factions.setpaypal: true
+      factions.setdiscord: true
       factions.title.color: true
   factions.kit.halfplayer:
     description: Can do all but create factions.
     children:
+      factions.discord: true
+      factions.recruitment: true
       factions.missions: true
       factions.admin: true
       factions.strike.view: true
@@ -372,3 +375,9 @@ permissions:
     description: Usage for the alt commands
   factions.inspect:
     description: Access to the inspect command
+  factions.discord:
+    description: View a faction's Discord link
+  factions.setdiscord:
+    description: Set your faction's Discord link
+  factions.recruitment:
+    description: View and manage faction recruitment listings

@@ -109,6 +109,7 @@ public enum FactionTag implements Tag {
     FACTION_DEATHS("faction-deaths", (fac) -> String.valueOf(fac.getDeaths())),
     FACTION_BANCOUNT("faction-bancount", (fac) -> String.valueOf(fac.getBannedPlayers().size())),
     STRIKES("strikes", (fac) -> fac.getStrikes().size() + ""),
+    DISCORD("discord", (fac) -> fac.getDiscord() == null ? "" : fac.getDiscord()),
     ;
 
     private final String tag;

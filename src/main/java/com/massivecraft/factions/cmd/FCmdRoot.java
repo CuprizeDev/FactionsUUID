@@ -138,6 +138,12 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
 
     public CmdSetPaypal cmdSetPaypal = new CmdSetPaypal();
 
+    public CmdDiscord cmdDiscord = new CmdDiscord();
+
+    public CmdSetDiscord cmdSetDiscord = new CmdSetDiscord();
+
+    public CmdRecruitment cmdRecruitment = new CmdRecruitment();
+
     public FCmdRoot() {
         super();
 
@@ -161,6 +167,9 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdBoom);
         this.addSubCommand(this.cmdSetPaypal);
         this.addSubCommand(this.cmdSeePaypal);
+        this.addSubCommand(this.cmdDiscord);
+        this.addSubCommand(this.cmdSetDiscord);
+        this.addSubCommand(this.cmdRecruitment);
         this.addSubCommand(this.cmdBypass);
         this.addSubCommand(this.cmdChat);
         this.addSubCommand(this.cmdToggleAllianceChat);

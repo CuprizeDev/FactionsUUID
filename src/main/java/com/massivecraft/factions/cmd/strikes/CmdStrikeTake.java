@@ -4,8 +4,12 @@ import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.cmd.CommandContext;
 import com.massivecraft.factions.cmd.CommandRequirements;
 import com.massivecraft.factions.cmd.FCommand;
+import com.massivecraft.factions.integration.DiscordSRVIntegration;
 import com.massivecraft.factions.struct.Permission;
+import com.massivecraft.factions.util.StrikeInfo;
 import com.massivecraft.factions.util.TL;
+
+import java.util.List;
 
 public class CmdStrikeTake extends FCommand {
     public CmdStrikeTake(){
@@ -35,12 +39,16 @@ public class CmdStrikeTake extends FCommand {
             return;
         }
 
+        List<StrikeInfo> strikes = faction.getStrikes();
+        String removedReason = (index - 1 >= 0 && index - 1 < strikes.size()) ? strikes.get(index - 1).getStrikeReason() : null;
+
         boolean success = faction.takeStrike(index - 1);
 
         if(!success){
             if(context.fPlayer != null)context.fPlayer.msg(TL.COMMAND_STRIKE_TAKE_DOESNTEXIST);
         }else{
             if(context.fPlayer != null)context.fPlayer.msg(TL.COMMAND_STRIKE_TAKE_SUCCESS, faction.describeTo(context.fPlayer));
+            DiscordSRVIntegration.sendStrikeRemovedEmbed(faction, removedReason, context.sender.getName(), index);
         }
     }
 

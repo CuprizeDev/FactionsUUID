@@ -20,6 +20,7 @@ public class CmdReload extends FCommand {
         FactionsPlugin.getInstance().reloadConfig();
         FactionsPlugin.getInstance().loadLang();
         FactionsPlugin.getInstance().loadFeatures();
+        com.massivecraft.factions.integration.DiscordSRVIntegration.startTask(FactionsPlugin.getInstance());
         long timeReload = (System.currentTimeMillis() - timeInitStart);
 
         context.msg(TL.COMMAND_RELOAD_TIME, timeReload);

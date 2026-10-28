@@ -4369,6 +4369,216 @@ public class MainConfig {
     }
 
     private OnlineChecks onlineChecks = new OnlineChecks();
+    @Comment("Discord & Faction Recruitment settings (DiscordSRV integration)")
+    private Discord discord = new Discord();
+
+    public class Discord {
+        @Comment("Words/substrings blocked from appearing in faction Discord invite codes")
+        private List<String> inappropriateWords = new ArrayList<String>() {
+            {
+                this.add("nigger");
+                this.add("nigga");
+                this.add("faggot");
+                this.add("fag");
+                this.add("retard");
+                this.add("kys");
+                this.add("nazi");
+                this.add("hitler");
+                this.add("porn");
+                this.add("nsfw");
+                this.add("hentai");
+                this.add("xxx");
+                this.add("rape");
+                this.add("pedo");
+                this.add("dox");
+                this.add("ddos");
+                this.add("swat");
+            }
+        };
+
+        public List<String> getInappropriateWords() {
+            return inappropriateWords != null ? Collections.unmodifiableList(inappropriateWords) : Collections.emptyList();
+        }
+
+        public class Recruitment {
+            @Comment("Whether to post faction recruitment embeds to Discord via DiscordSRV")
+            private boolean enabled = true;
+            @Comment("Discord channel name configured in DiscordSRV or raw Discord channel ID")
+            private String channelName = "recruitment";
+            @Comment("Interval in minutes to periodically post active faction recruitment listings (0 to only post when enabled)")
+            private int updateIntervalMinutes = 60;
+            @Comment("GUI title for the public recruitment board (/f recruitment)")
+            private String boardTitle = "&8Recruiting Factions";
+            @Comment("GUI title for managing a faction's recruitment (/f recruitment manage)")
+            private String manageTitle = "&8{FACTION} Recruitment";
+            @Comment("Available faction playstyle/type options in the recruitment menu")
+            private List<String> playstyles = new ArrayList<String>() {
+                {
+                    this.add("CASUAL");
+                    this.add("COMPETITIVE");
+                    this.add("PVP_FOCUSED");
+                    this.add("BUILDERS");
+                    this.add("RAIDERS");
+                }
+            };
+            @Comment("Available 'Looking For' role options in the recruitment menu")
+            private List<String> lookingForOptions = new ArrayList<String>() {
+                {
+                    this.add("ANY");
+                    this.add("PVPERS");
+                    this.add("BUILDERS");
+                    this.add("GRINDERS");
+                    this.add("EXPERIENCED");
+                }
+            };
+            @Comment("Discord embed title")
+            private String embedTitle = "🛡️ Faction Recruitment: {FACTION}";
+            @Comment("Discord embed hex color")
+            private String embedColor = "#00AAFF";
+            @Comment("Discord embed description lines")
+            private List<String> embedDescription = new ArrayList<String>() {
+                {
+                    this.add("**Leader:** {LEADER}");
+                    this.add("**Members:** {MEMBERS}/{MAX_MEMBERS}");
+                    this.add("**Power:** {POWER}/{MAX_POWER}");
+                    this.add("**Faction Type:** {TYPE}");
+                    this.add("**Looking For:** {LOOKING_FOR}");
+                    this.add("");
+                    this.add("🔗 **Discord Invite:** {DISCORD_LINK}");
+                }
+            };
+
+            public boolean isEnabled() {
+                return enabled;
+            }
+
+            public String getChannelName() {
+                return channelName;
+            }
+
+            public int getUpdateIntervalMinutes() {
+                return updateIntervalMinutes;
+            }
+
+            public String getBoardTitle() {
+                return boardTitle;
+            }
+
+            public String getManageTitle() {
+                return manageTitle;
+            }
+
+            public List<String> getPlaystyles() {
+                return playstyles != null && !playstyles.isEmpty() ? Collections.unmodifiableList(playstyles) : Arrays.asList("CASUAL", "COMPETITIVE", "PVP_FOCUSED", "BUILDERS", "RAIDERS");
+            }
+
+            public List<String> getLookingForOptions() {
+                return lookingForOptions != null && !lookingForOptions.isEmpty() ? Collections.unmodifiableList(lookingForOptions) : Arrays.asList("ANY", "PVPERS", "BUILDERS", "GRINDERS", "EXPERIENCED");
+            }
+
+            public String getEmbedTitle() {
+                return embedTitle;
+            }
+
+            public String getEmbedColor() {
+                return embedColor;
+            }
+
+            public List<String> getEmbedDescription() {
+                return embedDescription != null ? Collections.unmodifiableList(embedDescription) : Collections.emptyList();
+            }
+        }
+
+        public class Strikes {
+            @Comment("Whether to post faction strike embeds to Discord via DiscordSRV")
+            private boolean enabled = true;
+            @Comment("Discord channel name configured in DiscordSRV or raw Discord channel ID")
+            private String channelName = "strikes";
+            @Comment("Whether to also post an embed when a strike is removed")
+            private boolean announceRemovals = true;
+            @Comment("Discord embed title when a strike is given\n" +
+                    "Placeholders: {FACTION}, {LEADER}, {REASON}, {STAFF}, {STRIKE_NUMBER}, {TOTAL_STRIKES}")
+            private String giveTitle = "⚠️ Faction Strike: {FACTION}";
+            @Comment("Discord embed hex color when a strike is given")
+            private String giveColor = "#FF5555";
+            @Comment("Discord embed description lines when a strike is given")
+            private List<String> giveDescription = new ArrayList<String>() {
+                {
+                    this.add("**Faction:** {FACTION}");
+                    this.add("**Leader:** {LEADER}");
+                    this.add("**Reason:** {REASON}");
+                    this.add("**Issued By:** {STAFF}");
+                    this.add("");
+                    this.add("**Total Strikes:** {TOTAL_STRIKES}");
+                }
+            };
+            @Comment("Discord embed title when a strike is removed")
+            private String takeTitle = "✅ Strike Removed: {FACTION}";
+            @Comment("Discord embed hex color when a strike is removed")
+            private String takeColor = "#55FF55";
+            @Comment("Discord embed description lines when a strike is removed")
+            private List<String> takeDescription = new ArrayList<String>() {
+                {
+                    this.add("**Faction:** {FACTION}");
+                    this.add("**Removed Strike #{STRIKE_NUMBER}:** {REASON}");
+                    this.add("**Removed By:** {STAFF}");
+                    this.add("");
+                    this.add("**Total Strikes:** {TOTAL_STRIKES}");
+                }
+            };
+
+            public boolean isEnabled() {
+                return enabled;
+            }
+
+            public String getChannelName() {
+                return channelName;
+            }
+
+            public boolean isAnnounceRemovals() {
+                return announceRemovals;
+            }
+
+            public String getGiveTitle() {
+                return giveTitle;
+            }
+
+            public String getGiveColor() {
+                return giveColor;
+            }
+
+            public List<String> getGiveDescription() {
+                return giveDescription != null ? Collections.unmodifiableList(giveDescription) : Collections.emptyList();
+            }
+
+            public String getTakeTitle() {
+                return takeTitle;
+            }
+
+            public String getTakeColor() {
+                return takeColor;
+            }
+
+            public List<String> getTakeDescription() {
+                return takeDescription != null ? Collections.unmodifiableList(takeDescription) : Collections.emptyList();
+            }
+        }
+
+        private Recruitment recruitment = new Recruitment();
+        private Strikes strikes = new Strikes();
+
+        public Recruitment recruitment() {
+            return recruitment;
+        }
+
+        public Strikes strikes() {
+            return strikes;
+        }
+    }
+
+    public Discord discord() {
+        return discord;
+    }
 
     public class OnlineChecks {
         @Comment("Dictates whether we will use the hasOnlinePlayers method in block breaks.\n" +
