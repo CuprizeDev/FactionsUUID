@@ -30,6 +30,7 @@ public class SimpleItem {
         this.lore = builder.lore;
         this.material = builder.material;
         this.color = builder.color;
+        this.enchant = builder.enchant;
 
         this.data = builder.data;
     }
@@ -39,6 +40,7 @@ public class SimpleItem {
         this.lore = item.lore;
         this.material = item.material;
         this.color = item.color;
+        this.enchant = item.enchant;
 
         this.data = item.data;
     }
@@ -147,6 +149,7 @@ public class SimpleItem {
         private List<String> lore;
         private DyeColor color;
         private short data = 0;
+        private boolean enchant = false;
 
         private Builder() {
         }
@@ -173,6 +176,11 @@ public class SimpleItem {
 
         public Builder setData(short data) {
             this.data = data;
+            return this;
+        }
+
+        public Builder setEnchant(boolean enchant) {
+            this.enchant = enchant;
             return this;
         }
 

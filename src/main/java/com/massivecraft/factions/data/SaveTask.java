@@ -23,6 +23,7 @@ public class SaveTask implements Runnable {
         Factions.getInstance().forceSave(false);
         FPlayers.getInstance().forceSave(false);
         Board.getInstance().forceSave(false);
+        com.massivecraft.factions.raids.RaidManager.getInstance().save(false);
         running = false;
     }
 }

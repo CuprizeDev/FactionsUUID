@@ -21,6 +21,7 @@ public class CmdSaveAll extends FCommand {
         FPlayers.getInstance().forceSave(false);
         Factions.getInstance().forceSave(false);
         Board.getInstance().forceSave(false);
+        com.massivecraft.factions.raids.RaidManager.getInstance().save(false);
         context.msg(TL.COMMAND_SAVEALL_SUCCESS);
     }
 

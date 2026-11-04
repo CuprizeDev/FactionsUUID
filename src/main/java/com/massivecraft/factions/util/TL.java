@@ -643,6 +643,9 @@ public enum TL {
     COMMAND_RECRUITMENT_STATUS_DISABLED("&8[&5&l!&8] &cFaction recruitment is now &lDISABLED&c!"),
     COMMAND_RECRUITMENT_CLICK_DISCORD("&8[&5&l!&8] &a%1$s&a's Discord: &b&n%2$s"),
 
+    COMMAND_RAIDS_DESCRIPTION("View active and past raid history"),
+    COMMAND_RAIDS_DISABLED("&cRaid history is currently disabled."),
+
     COMMAND_TNT_TERRITORYONLY("&cCommand can only be run from your faction's territory!"),
     COMMAND_TNT_ADMINSET_USAGE("Set tnt as an admin"),
     COMMAND_TNT_ADMINADD_USAGE("Add tnt as an admin"),

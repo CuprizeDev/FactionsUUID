@@ -675,6 +675,33 @@ public class MainConfig {
             }
         }
 
+        public class Raids {
+            @Comment("Enable the /f raids command and raid history tracking")
+            private boolean enabled = true;
+            @Comment("Max past raids to store in history (0 for unlimited)")
+            private int maxHistory = 500;
+            @Comment("Title of the raid history GUI")
+            private String guiTitle = "&8Raid History";
+            @Comment("Title of the raid history GUI when filtered to a faction")
+            private String guiTitleFaction = "&8Raids: {FACTION}";
+
+            public boolean isEnabled() {
+                return enabled;
+            }
+
+            public int getMaxHistory() {
+                return maxHistory;
+            }
+
+            public String getGuiTitle() {
+                return guiTitle;
+            }
+
+            public String getGuiTitleFaction() {
+                return guiTitleFaction;
+            }
+        }
+
         private Fly fly = new Fly();
         private Help help = new Help();
         private Home home = new Home();
@@ -695,6 +722,11 @@ public class MainConfig {
         private PvPTop pvpTop = new PvPTop();
 
         private Roster roster = new Roster();
+        private Raids raids = new Raids();
+
+        public Raids raids() {
+            return raids;
+        }
 
         public Strike strike(){return strike;}
 
@@ -4564,8 +4596,119 @@ public class MainConfig {
             }
         }
 
+        public class Raids {
+            @Comment("Whether to post raid alerts to Discord via DiscordSRV")
+            private boolean enabled = true;
+            @Comment("Discord channel name configured in DiscordSRV or raw Discord channel ID for raid announcements")
+            private String channelName = "raids";
+
+            @Comment("Discord embed title when a raid starts\n" +
+                    "Placeholders: {DEFENDER}, {ATTACKER}, {WORLD}, {X}, {Y}, {Z}, {START_TIME}")
+            private String startTitle = "⚔️ Raid Alert: {DEFENDER} vs {ATTACKER} ⚔️";
+            @Comment("Discord embed hex color when a raid starts")
+            private String startColor = "#FF0000";
+            @Comment("Discord embed description lines when a raid starts")
+            private List<String> startDescription = new ArrayList<String>() {
+                {
+                    this.add("**{DEFENDER}** is being raided by **{ATTACKER}**!");
+                    this.add("");
+                    this.add("**Defender:** {DEFENDER}");
+                    this.add("**Attacker:** {ATTACKER}");
+                    this.add("**Location:** {WORLD}");
+                }
+            };
+
+            @Comment("Whether to announce in Discord when a raid ends")
+            private boolean announceEnd = true;
+            @Comment("Discord embed title when a raid ends\n" +
+                    "Placeholders: {DEFENDER}, {ATTACKER}, {DURATION}, {ATTACKER_KILLS}, {DEFENDER_KILLS}, {START_TIME}, {END_TIME}")
+            private String endTitle = "🛡️ Raid Ended: {DEFENDER} vs {ATTACKER}";
+            @Comment("Discord embed hex color when a raid ends")
+            private String endColor = "#55FF55";
+            @Comment("Discord embed description lines when a raid ends")
+            private List<String> endDescription = new ArrayList<String>() {
+                {
+                    this.add("The raid on **{DEFENDER}** by **{ATTACKER}** has ended!");
+                    this.add("");
+                    this.add("**Defender:** {DEFENDER}");
+                    this.add("**Attacker:** {ATTACKER}");
+                    this.add("**Duration:** {DURATION}");
+                    this.add("**Attacker Kills:** {ATTACKER_KILLS}");
+                    this.add("**Defender Kills:** {DEFENDER_KILLS}");
+                    this.add("**Blocks Placed (Def):** {BLOCKS_PLACED}");
+                }
+            };
+
+            @Comment("Whether to send direct messages to defending faction members via DiscordSRV account link")
+            private boolean playerAlerts = true;
+            @Comment("Discord DM embed title for defending faction members")
+            private String playerAlertTitle = "⚔️ Your Faction is being Raided! ⚔️";
+            @Comment("Discord DM embed hex color for defending faction members")
+            private String playerAlertColor = "#FF0000";
+            @Comment("Discord DM embed description lines for defending faction members")
+            private List<String> playerAlertDescription = new ArrayList<String>() {
+                {
+                    this.add("Your faction **{DEFENDER}** is being raided by **{ATTACKER}**!");
+                    this.add("Get online now to defend your base!");
+                }
+            };
+
+            public boolean isEnabled() {
+                return enabled;
+            }
+
+            public String getChannelName() {
+                return channelName;
+            }
+
+            public String getStartTitle() {
+                return startTitle;
+            }
+
+            public String getStartColor() {
+                return startColor;
+            }
+
+            public List<String> getStartDescription() {
+                return startDescription != null ? Collections.unmodifiableList(startDescription) : Collections.emptyList();
+            }
+
+            public boolean isAnnounceEnd() {
+                return announceEnd;
+            }
+
+            public String getEndTitle() {
+                return endTitle;
+            }
+
+            public String getEndColor() {
+                return endColor;
+            }
+
+            public List<String> getEndDescription() {
+                return endDescription != null ? Collections.unmodifiableList(endDescription) : Collections.emptyList();
+            }
+
+            public boolean isPlayerAlerts() {
+                return playerAlerts;
+            }
+
+            public String getPlayerAlertTitle() {
+                return playerAlertTitle;
+            }
+
+            public String getPlayerAlertColor() {
+                return playerAlertColor;
+            }
+
+            public List<String> getPlayerAlertDescription() {
+                return playerAlertDescription != null ? Collections.unmodifiableList(playerAlertDescription) : Collections.emptyList();
+            }
+        }
+
         private Recruitment recruitment = new Recruitment();
         private Strikes strikes = new Strikes();
+        private Raids raids = new Raids();
 
         public Recruitment recruitment() {
             return recruitment;
@@ -4573,6 +4716,10 @@ public class MainConfig {
 
         public Strikes strikes() {
             return strikes;
+        }
+
+        public Raids raids() {
+            return raids;
         }
     }
 

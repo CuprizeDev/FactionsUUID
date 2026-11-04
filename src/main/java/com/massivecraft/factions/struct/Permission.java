@@ -142,6 +142,7 @@ public enum Permission {
     DISCORD("discord"),
     SETDISCORD("setdiscord"),
     RECRUITMENT("recruitment"),
+    RAIDS("raids"),
     TOP("top"),
     VAULT("vault"),
     SETMAXVAULTS("setmaxvaults"),

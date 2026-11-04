@@ -144,6 +144,8 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
 
     public CmdRecruitment cmdRecruitment = new CmdRecruitment();
 
+    public CmdRaids cmdRaids = new CmdRaids();
+
     public FCmdRoot() {
         super();
 
@@ -170,6 +172,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdDiscord);
         this.addSubCommand(this.cmdSetDiscord);
         this.addSubCommand(this.cmdRecruitment);
+        this.addSubCommand(this.cmdRaids);
         this.addSubCommand(this.cmdBypass);
         this.addSubCommand(this.cmdChat);
         this.addSubCommand(this.cmdToggleAllianceChat);

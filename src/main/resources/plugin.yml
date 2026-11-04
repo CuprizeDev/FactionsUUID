@@ -75,6 +75,7 @@ permissions:
     children:
       factions.discord: true
       factions.recruitment: true
+      factions.raids: true
       factions.missions: true
       factions.admin: true
       factions.strike.view: true
@@ -381,3 +382,5 @@ permissions:
     description: Set your faction's Discord link
   factions.recruitment:
     description: View and manage faction recruitment listings
+  factions.raids:
+    description: View active and past raid history

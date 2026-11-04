@@ -350,6 +350,7 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         }
         int loadedClaims = Board.getInstance().load();
         Board.getInstance().clean();
+        com.massivecraft.factions.raids.RaidManager.getInstance().load();
         FactionsPlugin.getInstance().getLogger().info("Loaded " + loadedPlayers + " players in " + loadedFactions + " factions with " + loadedClaims + " claims");
 
         // Add Base Commands
@@ -417,6 +418,7 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         }
         if (getServer().getPluginManager().isPluginEnabled("FactionsKore")) {
             getServer().getPluginManager().registerEvents(new FKoreListener(this), this);
+            com.massivecraft.factions.listeners.FKoreRaidListener.registerIfPossible(this);
 
             try {
                 if (FactionsKore.get().getFeature(ConquestFeature.class) != null && FactionsKore.get().getFeature(ConquestFeature.class).isOn()) {
@@ -944,6 +946,7 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
             Factions.getInstance().forceSave();
             FPlayers.getInstance().forceSave();
             Board.getInstance().forceSave();
+            com.massivecraft.factions.raids.RaidManager.getInstance().forceSave();
         }
         if (seeChunkUtil != null) {
             seeChunkUtil.cleanup();

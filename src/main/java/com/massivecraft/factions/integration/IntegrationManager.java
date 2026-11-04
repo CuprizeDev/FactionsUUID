@@ -108,6 +108,9 @@ public class IntegrationManager implements Listener {
 
     @EventHandler
     public void onPluginEnabled(PluginEnableEvent event) {
+        if ("FactionsKore".equals(event.getPlugin().getName())) {
+            com.massivecraft.factions.listeners.FKoreRaidListener.registerIfPossible(FactionsPlugin.getInstance());
+        }
         Integration.getStartup(event.getPlugin().getName()).accept(event.getPlugin());
     }
 }
