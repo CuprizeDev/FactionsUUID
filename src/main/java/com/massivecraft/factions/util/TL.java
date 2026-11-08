@@ -729,6 +729,8 @@ public enum TL {
     CLAIMEXPIRY_TEMPORARY(" &#7315ed\u2726 &7Temporary Claim: &a\u2714 &8(&f%1$s&8)"),
     CLAIMEXPIRY_BASE(" &#7315ed\u2726 &7Temporary Claim: &c\u2718 &8(&fBase&8)"),
     CLAIMEXPIRY_SPAWN(" &#7315ed\u2726 &7Temporary Claim: &c\u2718 &8(&fSpawn&8)"),
+    CLAIMEXPIRY_SERVERCLAIMED(" &#7315ed\u2726 &7Claimed: &f%1$s"),
+    CLAIMEXPIRY_SERVERTEMPORARY(" &#7315ed\u2726 &7Temporary Claim: &c\u2718"),
 
     COMMAND_SHOW_NOFACTION_SELF("You are not in a faction"),
     COMMAND_SHOW_NOFACTION_OTHER("That's not a faction"),
@@ -856,6 +858,10 @@ public enum TL {
     COMMAND_CORNER_NOMOREPOWER("&cYour faction ran out of power and didn't claim the full corner!"),
     COMMAND_CORNER_SUCCESS("&eSuccessfully claimed this corner for &ayour faction&e!"),
     COMMAND_CORNER_MUSTOWN("&cYou must own the corner to claim it!"),
+    COMMAND_CORNER_ALREADYHAS("&8[&#7315ed&l!&8] &7Your faction already has a corner base! You can only claim &#7315ed1 &7corner."),
+    COMMAND_CORNER_TAKEN("&8[&#7315ed&l!&8] &7This corner already belongs to another faction!"),
+    COMMAND_CORNER_BLOCKED("&8[&#7315ed&l!&8] &7You can't claim this corner because &#7315ed%1$s &7owns land inside it!"),
+    COMMAND_CORNER_NOTENOUGHPOWER("&8[&#7315ed&l!&8] &7Your faction needs &#7315ed%1$s &7more power to claim this corner!"),
 
     COMMAND_WARUNCLAIMALL_DESCRIPTION("Unclaim all war zone land"),
     COMMAND_WARUNCLAIMALL_SUCCESS("&eYou unclaimed ALL war zone land."),

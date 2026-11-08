@@ -7,9 +7,13 @@ import com.massivecraft.factions.cmd.FCommand;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.struct.Permission;
+import com.massivecraft.factions.util.CornerClaims;
 import com.massivecraft.factions.util.TL;
 import net.royawesome.jlibnoise.MathHelper;
 import org.bukkit.Location;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CmdCorner extends FCommand {
     public CmdCorner(){
@@ -32,8 +36,9 @@ public class CmdCorner extends FCommand {
     @Override
     public void perform(CommandContext context) {
         FPlayer fPlayer = context.fPlayer;
+        FactionsPlugin plugin = FactionsPlugin.getInstance();
 
-        if(!FactionsPlugin.getInstance().isSOTW() && FactionsPlugin.getInstance().conf().corner().onlyAllowInSOTW()){
+        if(!plugin.isSOTW() && plugin.conf().corner().onlyAllowInSOTW()){
             fPlayer.msg(TL.COMMAND_CORNER_ISNTSOTW);
             return;
         }
@@ -50,27 +55,59 @@ public class CmdCorner extends FCommand {
             return;
         }
 
-        int xStart = corner == EnumCorner.NEG_NEG || corner == EnumCorner.NEG_POS ? 0 : -FactionsPlugin.getInstance().conf().corner().diameterClaim();
-        int zStart = corner == EnumCorner.NEG_NEG || corner == EnumCorner.POS_NEG ? 0 : -FactionsPlugin.getInstance().conf().corner().diameterClaim();
-        int xEnd = xStart + FactionsPlugin.getInstance().conf().corner().diameterClaim();
-        int zEnd = zStart + FactionsPlugin.getInstance().conf().corner().diameterClaim();
+        Faction faction = fPlayer.getFaction();
+        CornerClaims corners = CornerClaims.get();
+        corners.prune();
 
+        CornerClaims.Region existing = corners.of(faction.getId());
+        if(existing != null){
+            if(corners.ownsAny(faction, existing)){
+                fPlayer.msg(TL.COMMAND_CORNER_ALREADYHAS);
+                return;
+            }
+            corners.remove(faction.getId());
+        }
+
+        int size = Math.max(1, plugin.conf().corner().diameterClaim());
         Location location = fPlayer.getPlayer().getLocation();
+        String world = location.getWorld().getName();
         int myCX = location.getBlockX() >> 4;
         int myCZ = location.getBlockZ() >> 4;
 
-        Faction faction = fPlayer.getFaction();
-        int landRounded = faction.getLandRounded();
-        for(int x = xStart; x <= xEnd; x++){
-            for(int z = zStart; z <= zEnd; z++){
-                if (faction.getPowerRounded() <= landRounded) {
-                    fPlayer.msg(TL.COMMAND_CORNER_NOMOREPOWER);
+        int minX = corner == EnumCorner.NEG_NEG || corner == EnumCorner.NEG_POS ? myCX : myCX - (size - 1);
+        int minZ = corner == EnumCorner.NEG_NEG || corner == EnumCorner.POS_NEG ? myCZ : myCZ - (size - 1);
+        CornerClaims.Region region = new CornerClaims.Region(world, minX, minZ, minX + size - 1, minZ + size - 1);
+
+        if(corners.overlapsOther(region, faction.getId())){
+            fPlayer.msg(TL.COMMAND_CORNER_TAKEN);
+            return;
+        }
+
+        boolean override = plugin.conf().corner().overrideOtherClaims();
+        List<FLocation> toClaim = new ArrayList<>();
+        for(int x = minX; x < minX + size; x++){
+            for(int z = minZ; z < minZ + size; z++){
+                FLocation fl = new FLocation(world, x, z);
+                Faction at = Board.getInstance().getFactionAt(fl);
+                if(at.getId().equals(faction.getId())) continue;
+                if(!at.isWilderness() && (!at.isNormal() || !override)){
+                    fPlayer.msg(TL.COMMAND_CORNER_BLOCKED, at.getTag());
                     return;
                 }
-                Board.getInstance().setFactionAt(faction, new FLocation(fPlayer.getPlayer().getWorld().getName(), myCX + x, myCZ + z));
-                landRounded++;
+                toClaim.add(fl);
             }
         }
+
+        int missing = faction.getLandRounded() + toClaim.size() - faction.getPowerRounded();
+        if(missing > 0){
+            fPlayer.msg(TL.COMMAND_CORNER_NOTENOUGHPOWER, missing);
+            return;
+        }
+
+        for(FLocation fl : toClaim){
+            Board.getInstance().setFactionAt(faction, fl);
+        }
+        corners.set(faction.getId(), region);
 
         fPlayer.msg(TL.COMMAND_CORNER_SUCCESS);
     }

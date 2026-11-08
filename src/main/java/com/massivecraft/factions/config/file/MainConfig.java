@@ -46,7 +46,7 @@ public class MainConfig {
     }
 
     public class Corner {
-        private int diameterClaim = 25;
+        private int diameterClaim = 15;
         public int diameterClaim(){return diameterClaim;}
         private boolean overrideOtherClaims = true;
         public boolean overrideOtherClaims(){return overrideOtherClaims;}
@@ -4336,9 +4336,20 @@ public class MainConfig {
         private String expireAfter = "3h";
         private int scanSeconds = 20;
         private int maxPerScan = 50;
+        @Comment("Factions whose claims never expire (faction tag, not case-sensitive)")
+        private List<String> blacklist = new ArrayList<>(Arrays.asList("Staff", "RaidOutpost", "Safezone", "Warzone"));
 
         public boolean isEnabled() {
             return enabled;
+        }
+
+        public boolean isBlacklisted(String tag) {
+            if (tag == null || blacklist == null) return false;
+            String plain = ChatColor.stripColor(tag).trim();
+            for (String name : blacklist) {
+                if (name != null && name.trim().equalsIgnoreCase(plain)) return true;
+            }
+            return false;
         }
 
         public String getExpireAfter() {

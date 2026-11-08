@@ -125,6 +125,7 @@ public class ClaimExpiryUtil {
 
     @SuppressWarnings("unchecked")
     private boolean isBase(Faction f, FLocation loc) {
+        if (CornerClaims.get().isBase(f, loc)) return true;
         if (!hookShield()) return true;
         try {
             Object data = shieldData.invoke(shieldFeature, f.getId());
@@ -136,6 +137,10 @@ public class ClaimExpiryUtil {
         } catch (Throwable t) {
             return true;
         }
+    }
+
+    private boolean isExempt(Faction f) {
+        return plugin.conf().claimExpiry().isBlacklisted(f.getTag());
     }
 
     private boolean isSpawn(FLocation loc) {
@@ -151,7 +156,7 @@ public class ClaimExpiryUtil {
         Map<String, Faction> cache = new HashMap<>();
         for (Map.Entry<FLocation, String> e : new ArrayList<>(board.flocationIds.entrySet())) {
             Faction f = cache.computeIfAbsent(e.getValue(), id -> Factions.getInstance().getFactionById(id));
-            if (f == null || !f.isNormal()) continue;
+            if (f == null || !f.isNormal() || isExempt(f)) continue;
             FLocation loc = e.getKey();
             seen.add(loc);
             Stamp s = stamps.get(loc);
@@ -184,6 +189,7 @@ public class ClaimExpiryUtil {
 
     public String[] mapLines(Faction f, FLocation loc) {
         if (!started || f == null || !f.isNormal()) return null;
+        if (isExempt(f)) return new String[]{String.format(TL.CLAIMEXPIRY_SERVERCLAIMED.toString(), f.getTag()), TL.CLAIMEXPIRY_SERVERTEMPORARY.toString()};
         long now = System.currentTimeMillis();
         Stamp s = stamps.get(loc);
         if (s == null || !s.faction.equals(f.getId())) {
