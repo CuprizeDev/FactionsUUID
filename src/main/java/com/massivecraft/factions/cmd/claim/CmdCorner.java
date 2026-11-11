@@ -9,7 +9,6 @@ import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.CornerClaims;
 import com.massivecraft.factions.util.TL;
-import net.royawesome.jlibnoise.MathHelper;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
@@ -121,11 +120,10 @@ public class CmdCorner extends FCommand {
 
         double radius = (location.getWorld().getWorldBorder().getSize() / 2D);
 
-            double maxX = MathHelper.floor((center.getX() + radius - 0.1) / 16.0D);
-            double maxZ = MathHelper.floor((center.getZ() + radius - 0.1) / 16.0D);
-
-        double minX = MathHelper.floor((center.getX() - radius) / 16.0D);
-        double minZ = MathHelper.floor((center.getZ() - radius) / 16.0D);
+        int maxX = (int) Math.floor((center.getX() + radius - 0.1) / 16.0D);
+        int maxZ = (int) Math.floor((center.getZ() + radius - 0.1) / 16.0D);
+        int minX = (int) Math.floor((center.getX() - radius) / 16.0D);
+        int minZ = (int) Math.floor((center.getZ() - radius) / 16.0D);
 
         if(cx == maxX && cz == maxZ)return EnumCorner.POS_POS;
         if(cx == maxX && cz == minZ)return EnumCorner.POS_NEG;
