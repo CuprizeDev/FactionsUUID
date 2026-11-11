@@ -171,7 +171,9 @@ public class FactionsRallyListener implements Listener {
         String message = plugin.txt().parse(TL.COMMAND_RALLY_ENDED.toString(), rally.ownerName);
         for (Player member : viewers(Factions.getInstance().getFactionById(rally.factionId))) {
             member.sendMessage(message);
-            member.sendActionBar(Component.empty());
+            if (plugin.getFocus() == null || !plugin.getFocus().hasActiveFocus(rally.factionId)) {
+                member.sendActionBar(Component.empty());
+            }
         }
     }
 
@@ -208,7 +210,7 @@ public class FactionsRallyListener implements Listener {
                 if (drawBeam) {
                     beam(member, target);
                 }
-                if (!member.getUniqueId().equals(rally.owner)) {
+                if (!member.getUniqueId().equals(rally.owner) && (plugin.getFocus() == null || !plugin.getFocus().hasActiveFocus(rally.factionId))) {
                     member.sendActionBar(bar(member, rally.ownerName, target));
                 }
             }

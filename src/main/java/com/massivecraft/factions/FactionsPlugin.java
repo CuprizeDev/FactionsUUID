@@ -173,6 +173,7 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
     private SeeChunkUtil seeChunkUtil;
     private FactionsChunkLoaderListener chunkLoaders;
     private FactionsRallyListener rally;
+    private FactionsFocusListener focus;
     private ClaimExpiryUtil claimExpiry;
     private ParticleProvider particleProvider;
     private IWorldguard worldguard;
@@ -681,7 +682,7 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
 
         YamlConfiguration conf = YamlConfiguration.loadConfiguration(lang);
         for (TL item : TL.values()) {
-            if (conf.getString(item.getPath()) == null) {
+            if (conf.getString(item.getPath()) == null || conf.isConfigurationSection(item.getPath())) {
                 conf.set(item.getPath(), item.getDefault());
             }
         }
@@ -965,6 +966,10 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         return chunkLoaders;
     }
 
+    public FactionsFocusListener getFocus() {
+        return focus;
+    }
+
     public FactionsRallyListener getRally() {
         return rally;
     }
@@ -974,6 +979,17 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
     }
 
     public void loadFeatures() {
+        if (conf().focus().isEnabled()) {
+            if (focus == null) {
+                focus = new FactionsFocusListener(this);
+                getServer().getPluginManager().registerEvents(focus, this);
+            }
+            focus.reload();
+        } else if (focus != null) {
+            HandlerList.unregisterAll(focus);
+            focus.clear();
+            focus = null;
+        }
         if (conf().rally().isEnabled()) {
             if (rally == null) {
                 rally = new FactionsRallyListener(this);
@@ -1016,6 +1032,11 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
     }
 
     public void unloadFeatures() {
+        if (focus != null) {
+            HandlerList.unregisterAll(focus);
+            focus.clear();
+            focus = null;
+        }
         if (rally != null) {
             HandlerList.unregisterAll(rally);
             rally.clear();

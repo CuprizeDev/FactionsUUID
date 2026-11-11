@@ -698,6 +698,21 @@ public enum TL {
     COMMAND_RALLY_ENDED("&7%1$s's rally has ended."),
     COMMAND_RALLY_BAR("&f%1$s &7(%2$sm) &a&l%3$s"),
     COMMAND_RALLY_BAROTHERWORLD("&f%1$s &7(%2$s)"),
+    COMMAND_FOCUS_DESCRIPTION("Focus a player for your faction"),
+    COMMAND_FOCUS_DISABLED("&8[&#7315ed&l!&8] &7This feature is switched off."),
+    COMMAND_FOCUS_NONE("&7Your faction has no active focus."),
+    COMMAND_FOCUS_COOLDOWN("&cWait %1$ss before focusing again."),
+    COMMAND_FOCUS_SAMEFACTION("&cYou cannot focus a member of your own faction!"),
+    COMMAND_FOCUS_ALLYTRUCE("&cYou cannot focus an ally or truce!"),
+    COMMAND_FOCUS_IMMUNE("&cYou cannot focus that player!"),
+    COMMAND_FOCUS_TOOFAR("&c%1$s is out of range! Someone in your faction must be within %2$s blocks."),
+    COMMAND_FOCUS_STARTED("&d&l[FOCUS] &f%1$s%2$s &7focused &d%3$s&7!"),
+    COMMAND_FOCUS_ENDED("&d&l[FOCUS] &7Your faction is no longer focusing &d%1$s&7."),
+    COMMAND_FOCUS_OUTOFRANGE("&d&l[FOCUS] &d%1$s &7went out of range and is no longer focused."),
+    COMMAND_FOCUS_DIED("&d&l[FOCUS] &d%1$s &7has died and is no longer focused."),
+    COMMAND_FOCUS_QUIT("&d&l[FOCUS] &d%1$s &7logged out and is no longer focused."),
+    COMMAND_FOCUS_BAR("&d&lFOCUS &8\u00bb &d%1$s &c%2$s\u2764 &7(%3$sm) &d&l%4$s"),
+    COMMAND_FOCUS_BAROTHERWORLD("&d&lFOCUS &8\u00bb &d%1$s &7(%2$s)"),
     COMMAND_CHUNKLOADER_DESCRIPTION("List your faction's chunk loaders"),
     COMMAND_CHUNKLOADER_DISABLED("&8[&#7315ed&l!&8] &7This feature is switched off."),
     COMMAND_CHUNKLOADER_LISTHEADER("&dChunk loaders of %1$s:"),
@@ -1114,6 +1129,7 @@ public enum TL {
     PERM_OWNER("Set ownership of land using /f owner in faction territory"),
     PERM_ROSTERCONTROL("Control a faction's roster"),
     PERM_TASKS("Manage a faction's tasks"),
+    PERM_FOCUS("Focusing enemy players"),
 
     PERM_SHORT_BUILD("build"),
     PERM_SHORT_DESTROY("destroy"),
@@ -1145,6 +1161,7 @@ public enum TL {
     PERM_SHORT_CLAIMCORNER("claim a corner"),
     PERM_SHORT_ROSTERCONTROL("control roster"),
     PERM_SHORT_TASKS("manage tasks"),
+    PERM_SHORT_FOCUS("focus players"),
 
     PERM_DENIED_WILDERNESS("&cYou can't %s in the wilderness"),
     PERM_DENIED_SAFEZONE("&c>You can't %s in a safe zone"),
@@ -1272,7 +1289,8 @@ public enum TL {
 
     @Override
     public String toString() {
-        return this == TITLE ? ChatUtil.color(LANG.getString(this.path, def)) + " " : ChatUtil.color(LANG.getString(this.path, def));
+        String val = (LANG == null || LANG.isConfigurationSection(this.path)) ? def : LANG.getString(this.path, def);
+        return this == TITLE ? ChatUtil.color(val) + " " : ChatUtil.color(val);
     }
 
     public String format(Object... args) {

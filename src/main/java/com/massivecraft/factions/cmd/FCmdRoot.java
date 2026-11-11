@@ -96,6 +96,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdSeeChunk cmdSeeChunk = new CmdSeeChunk();
     public CmdPatchCrumbs cmdPatchCrumbs = new CmdPatchCrumbs();
     public CmdRally cmdRally = new CmdRally();
+    public CmdFocus cmdFocus = new CmdFocus();
     public CmdChunkLoader cmdChunkLoader = new CmdChunkLoader();
     public CmdWarp cmdWarp = new CmdWarp();
     public CmdWarpOther cmdWarpOther = new CmdWarpOther();
@@ -225,6 +226,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdSeeChunk);
         this.addSubCommand(this.cmdPatchCrumbs);
         this.addSubCommand(this.cmdRally);
+        this.addSubCommand(this.cmdFocus);
         this.addSubCommand(this.cmdChunkLoader);
         this.addSubCommand(this.cmdWarp);
         this.addSubCommand(this.cmdWarpOther);

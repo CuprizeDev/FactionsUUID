@@ -3999,6 +3999,7 @@ public class MainConfig {
 
     private ChunkLoaders chunkLoaders = new ChunkLoaders();
     private Rally rally = new Rally();
+    private Focus focus = new Focus();
     private ClaimExpiry claimExpiry = new ClaimExpiry();
     private SpawnClaimLimit spawnClaimLimit = new SpawnClaimLimit();
 
@@ -4331,6 +4332,45 @@ public class MainConfig {
         }
     }
 
+    public class Focus {
+        @Comment("Whether the /f focus feature is enabled")
+        private boolean enabled = true;
+        @Comment("Cooldown in seconds per player between uses of /f focus")
+        private int cooldownSeconds = 5;
+        @Comment("How often (in ticks) to update the focus actionbar and glow effect (20 ticks = 1 second)")
+        private int updateTicks = 5;
+        @Comment("Maximum distance in blocks from the closest online faction member before focus automatically expires (set <= 0 for unlimited)")
+        private double maxRange = 100.0;
+        @Comment("Whether to display the focus tracker on the action bar")
+        private boolean actionBarEnabled = true;
+        @Comment("Whether to apply the 1.20+ glowing outline to the focused player for focusing faction members (automatically disabled on versions below 1.20)")
+        private boolean glowEnabled = true;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public int getCooldownSeconds() {
+            return cooldownSeconds;
+        }
+
+        public int getUpdateTicks() {
+            return updateTicks;
+        }
+
+        public double getMaxRange() {
+            return maxRange;
+        }
+
+        public boolean isActionBarEnabled() {
+            return actionBarEnabled;
+        }
+
+        public boolean isGlowEnabled() {
+            return glowEnabled;
+        }
+    }
+
     public class ClaimExpiry {
         private boolean enabled = true;
         private String expireAfter = "3h";
@@ -4401,6 +4441,10 @@ public class MainConfig {
 
     public ChunkLoaders chunkLoaders() {
         return chunkLoaders;
+    }
+
+    public Focus focus() {
+        return focus;
     }
 
     public Rally rally() {

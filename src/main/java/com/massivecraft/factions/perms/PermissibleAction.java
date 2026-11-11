@@ -38,7 +38,8 @@ public enum PermissibleAction {
     WARP(DefaultPermissionsConfig.Permissions::getWarp, TL.PERM_WARP, TL.PERM_SHORT_WARP, "ENDER_PEARL"),
     FLY(DefaultPermissionsConfig.Permissions::getFly, TL.PERM_FLY, TL.PERM_SHORT_FLY, "FEATHER"),
     ROSTERCONTROL(true, DefaultPermissionsConfig.Permissions::getRosterControl, TL.PERM_ROSTERCONTROL, TL.PERM_SHORT_ROSTERCONTROL, "ANVIL"),
-    CLAIMCORNER(true, DefaultPermissionsConfig.Permissions::getCorner, TL.PERM_CLAIMCORNER, TL.PERM_SHORT_CLAIMCORNER, "MAP")
+    CLAIMCORNER(true, DefaultPermissionsConfig.Permissions::getCorner, TL.PERM_CLAIMCORNER, TL.PERM_SHORT_CLAIMCORNER, "MAP"),
+    FOCUS(true, DefaultPermissionsConfig.Permissions::getFocus, TL.PERM_FOCUS, TL.PERM_SHORT_FOCUS, "ENDER_EYE")
     ;
 
     private final boolean factionOnly;

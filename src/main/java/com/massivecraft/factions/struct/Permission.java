@@ -133,6 +133,8 @@ public enum Permission {
     PATCH_CRUMBS("patchcrumbs"),
     RALLY("rally"),
     RALLY_ADMIN("rally.admin"),
+    FOCUS("focus"),
+    FOCUS_IMMUNE("focus.immune"),
     CHUNKLOADER("chunkloader"),
     CHUNKLOADER_ADMIN("chunkloader.admin"),
     SEECHUNK("seechunk"),

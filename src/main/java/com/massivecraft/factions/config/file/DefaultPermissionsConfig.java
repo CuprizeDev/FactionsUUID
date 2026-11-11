@@ -186,6 +186,19 @@ public class DefaultPermissionsConfig {
 
         public FullPermInfo getCorner(){return this.corner;}
 
+        public FactionOnlyPermInfo getFocus() {
+            return this.focus;
+        }
+
+        @Comment("Can focus enemy players using /f focus")
+        private FactionOnlyPermInfo focus = new FactionOnlyPermInfo() {
+            {
+                this.coleader.value = true;
+                this.moderator.value = true;
+                this.normal.value = true;
+            }
+        };
+
         @Comment("Can change repeaters")
         private FullPermInfo repeater = new FullPermInfo(){
             {
